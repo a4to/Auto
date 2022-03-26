@@ -125,11 +125,11 @@ pacstrap /mnt \
     pulseaudio-bluetooth pulsemixer bluez bluez-tools bluez-plugins bluez-libs wget lolcat grub efibootmgr dosfstools mtools pacman-contrib fzf \
     terminus-font os-prober  bash-completion --needed --noconfirm ; clear ; } 
 
-cp_scripts(){ cd $srcdir && cp AutoLinux.sh .skell /mnt/tmp/ ; cp AutoLinux.sh /mnt/bin/AutoLinux-installer >/dev/null 2>&1 ; }
+cp_scripts(){ cd $srcdir && cp AutoLinux.sh .skell /mnt/tmp/ ; cp AutoInstall /mnt/usr/bin/AutoInstall >/dev/null 2>&1 ; }
 
 success(){ clear ; setfont ter-p16n && echo -e "" &&
 figlet -toc 'Success!'|lolcat ; echo -e "\n" ; sleep 2 && 
-arch-chroot /mnt AutoLinux-installer ; clear ; skell ; }
+arch-chroot /mnt /usr/bin/AutoInstall ; clear ; }
 
 check_root ; requierments ; # refreshkeys ; 
 welcome ; init ; partitioning ; 
