@@ -13,13 +13,9 @@ makedepends=(git)
 source=("git+$url.git")
 sha256sums=('SKIP')
 
-pkgver() {
-  printf "2.0.$(git rev-list --count HEAD)"
-}
-
 package() {
   cd "$srcdir"
-    install -Dm755 ${pkgname}/{AutoLinux.sh,pre-install.sh} -t "${pkgdir}/opt/${_pkgname}"
-    install -Dm755 ${pkgname}/AutoLinux.sh "${pkgdir}/usr/bin/${_pkgname}"
+    install -Dm755 ${pkgname}/{AutoInstall.sh,Auto-PreInstall.sh} -t "${pkgdir}/opt/${_pkgname}"
+    install -Dm755 ${pkgname}/Auto-PreInstall.sh "${pkgdir}/usr/bin/${_pkgname}"
     install -Dm644 ${pkgname}/LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 }
