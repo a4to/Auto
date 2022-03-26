@@ -57,7 +57,7 @@ fail(){ err "   ERROR! CATASTROPHIC FAILIURE CAPTAIN . . ." ; sleep 2 ; }
 
 requierments(){ pacman -Syy  figlet lolcat terminus-font sudo   --needed --noconfirm 2>/dev/null && setfont ter-p16n; }
 
-welcome(){ clear ; figlet -toc '|-WELCOME-| - TO - |-N U 1 L L 1 N U X-|' | lolcat ; sleep 1;
+welcome(){ clear ; figlet -toc '|-WELCOME-| - TO - |-AUTOLINUX-|' | lolcat ; sleep 1;
     echo -e "\n\n  Please use 'cfdisk' (recommended) or 'fdisk' to partition your drive before running this script.\n  Generally, a 550M EFI partition, a 2-10G swap partition,  and the rest of space dedicated to linux filesystem.\n" ; sleep 5 ; }
 
 
@@ -131,7 +131,7 @@ success(){ clear ; setfont ter-p16n && echo -e "" &&
 figlet -toc 'Success!'|lolcat ; echo -e "\n" ; sleep 2 && 
 arch-chroot /mnt AutoLinux-installer ; clear ; skell ; }
 
-check_root ; requierments ; refreshkeys ; 
+check_root ; requierments ; # refreshkeys ; 
 welcome ; init ; partitioning ; 
 base_install && post_install ; drives ; 
 cp_scripts ; success && exit 0 || fail && exit 1

@@ -436,7 +436,7 @@ grep -q "OTHER_OPTS='-a pulseaudio -m alsa_seq -r 48000'" /etc/conf.d/fluidsynth
 [ "$loader" = "0" ] && 
     grub && grubtheme ; pkill -15 -x 'pulseaudio' ; 
     sudo -u "$name" pulseaudio --start ; system_config ; 
-    finalize ; clear ; skell
+    finalize ; clear ; [ $edition = '1' ] || [ $edition = '2' ] && skell
 
 
 #########################################################################################################################################################################################
