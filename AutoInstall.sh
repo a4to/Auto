@@ -400,7 +400,7 @@ archlinuxinstall yay-bin
 
 [ $edition = "2" ] && pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/plasma.csv" && gitbranch="plasma"
 
-[ $edition = "3" ] && pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/plasma.csv" && gitbranch="bare"
+[ $edition = "3" ] && pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/bare.csv" && gitbranch="bare"
 
 
 installationloop ; cpudrivers ; gpudrivers  
