@@ -433,10 +433,9 @@ mkdir -p /etc/X11/xinit/xinitrc.d >/dev/null 2>&1 &&
 grep -q "OTHER_OPTS='-a pulseaudio -m alsa_seq -r 48000'" /etc/conf.d/fluidsynth ||
 	echo "OTHER_OPTS='-a pulseaudio -m alsa_seq -r 48000'" >> /etc/conf.d/fluidsynth
 
-[ "$loader" = "0" ] && 
-    grub && grubtheme ; pkill -15 -x 'pulseaudio' ; 
-    sudo -u "$name" pulseaudio --start ; system_config ; 
-    finalize ; clear ; [ $edition = '1' ] || [ $edition = '2' ] && skell
+[ "$loader" = "0" ] && grubtheme && grub ; pkill -15 -x 'pulseaudio' ; 
+    sudo -u "$name" pulseaudio --start ; system_config ; finalize ; 
+    clear ; [ $edition = '1' ] || [ $edition = '2' ] && skell
 
 
 #########################################################################################################################################################################################
