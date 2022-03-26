@@ -54,7 +54,7 @@ newmirrors(){ \
 -p 'http,https' --save /etc/pacman.d/mirrorlist >/dev/null 2>&1  ; }
 
 initmsg1(){ \
-	dialog --title " Welcome to AutoLinux! " --msgbox "\\n             Welcome, and thank you for choosing AutoLinux!\\n\\n    This script will now install the AutoLinux edition of your choice.\\n" 9 80 ; }
+	dialog --title " Welcome to Automate OS! " --msgbox "\\n             Welcome, and thank you for choosing AutoLinux!\\n\\n    This script will now install the AutoLinux edition of your choice.\\n" 9 80 ; }
 
 whichedition(){
   edition="$(dialog --colors --menu "   Please Select the AutoLinux Edition to Install :" 12 55 1 1 "DWM                                        " 2 "Plasma                                     " 3 "Bare ArchLinux                             "  3>&1 1>&2 2>&3 3>&1)" ; }
