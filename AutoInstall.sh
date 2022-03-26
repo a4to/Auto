@@ -229,8 +229,8 @@ pipinstall(){ \
 	yes | pip install "$1" ; }
 
 installationloop(){ \
-	([ -f "$pkgsfile" ] && cp "$pkgsfile" /tmp/pkgs.csv) || curl -Ls "$pkgsfile" | sed '/^#/d' > /tmp/pkgs.csv
-	total=$(wc -l < /tmp/pkgs.csv)
+	([ -f "$pkgsfile" ] && cp "$pkgsfile" /tmp/editions.csv) || curl -Ls "$pkgsfile" | sed '/^#/d' > /tmp/editions.csv
+	total=$(wc -l < /tmp/editions.csv)
 	aurinstalled=$(pacman -Qqm)
 	while IFS=, read -r tag program comment; do
 		n=$((n+1))
@@ -243,7 +243,7 @@ installationloop(){ \
 			"R") replacedir "$program" "$comment" ;;
 		     *) maininstall "$program" "$comment" ;;
 		esac
-	done < /tmp/pkgs.csv ; }
+	done < /tmp/editions.csv ; }
 
 placeconfigs() {
 	dialog --infobox " Downloading and installing config files..." 4 60
