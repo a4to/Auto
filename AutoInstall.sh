@@ -293,9 +293,7 @@ system_config(){ \
 
 	grep -q "ILoveCandy" /etc/pacman.conf || sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
 	sed -i "s/^#ParallelDownloads = *.*$/ParallelDownloads = 10/;s/^#Color$/Color/" /etc/pacman.conf
-	echo "$hostname" > /etc/hostname
-
-    [ -f /etc/localtime ] && rm /etc/localtime ;
+  [ $edition = '3' ] && hostname="ArchLinux" ; [ -f /etc/localtime ] && rm /etc/localtime ;
     ln -sF /usr/share/zoneinfo/Africa/Harare /etc/localtime
 	sed -i 's/#en_US.UTF-8/en_US.UTF-8/g' /etc/locale.gen
 	sed -i 's/#en_ZA.UTF-8/en_ZA.UTF-8/g' /etc/locale.gen
@@ -304,11 +302,10 @@ system_config(){ \
     [ "$(cat /etc/locale.conf|grep "$area"|wc -l)" -eq "0" ] && 
     echo "LANG=en_"$area".UTF-8" >>/etc/locale.conf ; locale-gen &>/dev/null
 	echo -e "127.0.0.1     localhost\n::1     localhost\n127.0.1.1     $hostname.localhost $hostname" >/etc/hosts
-    [ $edition = "2" ] && systemctl enable sddm.service >/dev/null 2>&1 
-	systemctl enable NetworkManager.service >/dev/null 2>&1
-    systemctl enable bluetooth-autoconnect.service >/dev/null 2>&1
-    systemctl enable bluetooth.service >/dev/null 2>&1
-	[ $edition = "1" ] && systemctl enable mpd.service >/dev/null 2>&1
+    [ $edition = "2" ] && systemctl enable sddm.service >/dev/null 2>&1 ; systemctl enable NetworkManager.service >/dev/null 2>&1 ; 
+    [ $edition = '1' ] || [ $edition = '2' ] && systemctl enable bluetooth-autoconnect.service >/dev/null 2>&1 ; 
+    systemctl enable bluetooth.service >/dev/null 2>&1 ; [ $edition = "1" ] && 
+      systemctl enable mpd.service >/dev/null 2>&1 ; echo "$hostname" > /etc/hostname
   rm -rf /tmp/pulse* ~/.pulse* ~/.config/pulse /home/$name/.pulse* /home/$name/.config/pulse* ; }
 
 xftlib(){ \                                            
@@ -399,9 +396,11 @@ sudoers "%wheel ALL=(ALL) NOPASSWD: ALL #AutoLinux"
 archlinuxinstall yay-bin
 
 
-[ $edition = "1" ] && pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/pkgs/dwm.csv" && gitbranch="dwm"
+[ $edition = "1" ] && pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/dwm.csv" && gitbranch="dwm"
 
-[ $edition = "2" ] && pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/pkgs/plasma.csv" && gitbranch="plasma"
+[ $edition = "2" ] && pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/plasma.csv" && gitbranch="plasma"
+
+[ $edition = "3" ] && pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/plasma.csv" && gitbranch="bare"
 
 
 installationloop ; cpudrivers ; gpudrivers  
