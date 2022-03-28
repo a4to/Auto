@@ -23,6 +23,8 @@ pkgdir="/opt"
 
 aurhelper="yay"
 
+TITLE=' ~ Automate OS ~ '
+
 mirlist="/etc/pacman.d/mirrorlist"
 
 lmirlist="/etc/pacman.d/local-mirrorlist"
@@ -41,6 +43,13 @@ bootid="$(lsblk|grep boot |sed 's/p.*$//;s/├─//;s/└─//'|sed 's/^/\/dev\/
 rmdblck="$([ -f /var/lib/pacman/db.lck ] && rm -rf /var/lib/pacman/db.lck)"
 
 
+KERNELS=(
+  '1.' 'linux'
+  '2.' 'linux-lts'
+  '3.' 'linux-hardened'
+  '4.' 'linux-zen')
+
+
 installpkg(){ pacman --noconfirm --needed -S "$*" >/dev/null 2>&1 ; }
 
 check_root(){ [ "$(id -u)" -ne 0 ] && err "Root priviledges are required to run this script!"; }
@@ -49,7 +58,7 @@ err(){ echo >&2 "$(tput bold; tput setaf 1)[-] ERROR: ${*}$(tput sgr0)" && $rmdb
 
 
 newmirrors(){ \
-    dialog --infobox " Testing fastest mirrors for most efficient downloads..." 4 50
+    dialog --title "$TITLE" --infobox " Testing fastest mirrors for most efficient downloads..." 4 50
     mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup && reflector --sort rate -a48 -f20 -l20 -c 'ZA,US,UK,Germany,Netherlands' \
 -p 'http,https' --save /etc/pacman.d/mirrorlist >/dev/null 2>&1  ; }
 
@@ -61,6 +70,10 @@ whichedition(){
 
 initmsg2(){
 	dialog --colors --title " Please Note :" --yes-label " Lets Boogie! " --no-label " Lets not boogie :| " --yesno "\\n  An Arch Linux, or Arch based system is required for the installation of AutoLinux.\\n\\n       If you are running any other distrobution the installation will fail." 9 90 ; }
+
+selKernel(){
+  kernel="$(dialog --stdout --colors --title "Kernel Selection" --menu "\\n             Please choose your kernel:\\n\\n (If unsure, just select the default linux kernel)" 14 56 6 "${KERNELS[@]}" 3>&1 1>&2 2>&3 3>&1)" ; } 
+
 
 user_and_password() {
 	name=$(dialog --inputbox " Please enter a name for the user account: " 10 60 3>&1 1>&2 2>&3 3>&1) || exit 1
@@ -76,7 +89,8 @@ user_and_password() {
 	done ; }
 
 root_user_password(){
-    pass3=$(dialog --no-cancel --passwordbox "Enter a password for the root user:" 10 60 3>&1 1>&2 2>&3 3>&1)
+  dialog --colors --title "$TITLE" --yes-label ' Change Root Password ' --no-label ' Keep Current Password ' --yesno "\\nWould you like to change the root password?\\n\\nIf this is a clean install and not an addition to an existing system, it is essential that you change the root password.\\n\\nChange root password?" 12 66 3>&1 1>&2 2>&3 3>&1 || return 0 ;
+  pass3=$(dialog --no-cancel --passwordbox "Enter a password for the root user:" 10 60 3>&1 1>&2 2>&3 3>&1)
 	pass4=$(dialog --no-cancel --passwordbox "Retype the password." 10 60 3>&1 1>&2 2>&3 3>&1)
 	while ! [ "$pass3" = "$pass4" ]; do
 		unset pass2
@@ -89,7 +103,7 @@ usercheck() { \
 	dialog --colors --title "WARNING!" --yes-label " CONTINUE " --no-label " RETURN " --yesno "\nThe user '$name' already exists on this system. AutoLinux can install for this user, but will overwrite any existing configuration files existing on \\nthis users account. \\n\\nHowever, it will not overwrite any other user files, documents, videos, or personal files of any sorts.\\n\\nIrrespective, only click <CONTINUE> if you are certain you have backed up any wanted system 'config' files.\\n\\nThe users password will also be changed to the one you just provided." 17 85 ; }
 
 preinstall() { \
-	dialog --title " The calm before the STORM!" --yes-label "CONTINUE" --no-label " EXIT " --yesno "\\nThe rest of the proccess is automated and might take a while, depending on your connection. \\n\\nSo sit back, relax and please do not stop the process if it seems stuck.\\n\\nSome packages just take longer to compile than others.\\n\\n\\n  Ready when you are?" 16 60 ; }
+	dialog --title " The calm before the STORM!" --yes-label "CONTINUE" --no-label " EXIT " --yesno "\\nThe rest of the proccess is automated and might take a while, depending on your connection. \\n\\nSo sit back, relax and please do not stop the process if it seems stuck.\\n\\nSome packages just take longer to compile than others.\\n\\n\\nReady when you are?" 16 60 ; }
 
 
 adduserandpass() { \
@@ -102,6 +116,7 @@ adduserandpass() { \
 
 setrootpass(){
 	dialog --infobox " Changing password for root user..." 4 50
+  [ -z "$pass3" ] && pass3="autolinux" ;
 	echo "root:$pass3" | chpasswd >/dev/null 2>&1
 	unset pass3 pass4 ; }
 
