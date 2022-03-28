@@ -44,11 +44,16 @@ rmdblck="$([ -f /var/lib/pacman/db.lck ] && rm -rf /var/lib/pacman/db.lck)"
 
 
 KERNELS=(
-  '1.' 'linux'
-  '2.' 'linux-lts'
-  '3.' 'linux-hardened'
-  '4.' 'linux-zen')
+  '1' 'linux                                       '
+  '2' 'linux-lts                                   '
+  '3' 'linux-hardened                              '
+  '4' 'linux-zen                                   ')
 
+EDITIONS=(  
+  '1' 'DWM                                         '
+  '2' 'Plasma                                      '
+  '3' 'Server Install (Bare ArchLinux)             ')
+ 
 
 installpkg(){ pacman --noconfirm --needed -S "$*" >/dev/null 2>&1 ; }
 
@@ -66,13 +71,13 @@ initmsg1(){ \
 	dialog --title " Welcome to Automate OS! " --msgbox "\\n             Welcome, and thank you for choosing AutoLinux!\\n\\n    This script will now install the AutoLinux edition of your choice.\\n" 9 80 ; }
 
 whichedition(){
-  edition="$(dialog --colors --menu "   Please Select the AutoLinux Edition to Install :" 12 55 1 1 "DWM                                        " 2 "Plasma                                     " 3 "Bare ArchLinux                             "  3>&1 1>&2 2>&3 3>&1)" ; }
+  edition="$(dialog --title "$TITLE" --colors --menu "   Please Select the AutoLinux Edition to Install :" 14 56 5 "${EDITIONS[@]}" 3>&1 1>&2 2>&3 3>&1)" ; }
 
 initmsg2(){
 	dialog --colors --title " Please Note :" --yes-label " Lets Boogie! " --no-label " Lets not boogie :| " --yesno "\\n  An Arch Linux, or Arch based system is required for the installation of AutoLinux.\\n\\n       If you are running any other distrobution the installation will fail." 9 90 ; }
 
 selKernel(){
-  kernel="$(dialog --stdout --colors --title "Kernel Selection" --menu "\\n             Please choose your kernel:\\n\\n (If unsure, just select the default linux kernel)" 14 56 6 "${KERNELS[@]}" 3>&1 1>&2 2>&3 3>&1)" ; } 
+  kernel="$(dialog --stdout --colors --title "Kernel Selection" --menu "             Please choose your kernel:\\n (If unsure, just select the default linux kernel)" 14 56 6 "${KERNELS[@]}" 3>&1 1>&2 2>&3 3>&1)" ; } 
 
 
 user_and_password() {
@@ -103,7 +108,7 @@ usercheck() { \
 	dialog --colors --title "WARNING!" --yes-label " CONTINUE " --no-label " RETURN " --yesno "\nThe user '$name' already exists on this system. AutoLinux can install for this user, but will overwrite any existing configuration files existing on \\nthis users account. \\n\\nHowever, it will not overwrite any other user files, documents, videos, or personal files of any sorts.\\n\\nIrrespective, only click <CONTINUE> if you are certain you have backed up any wanted system 'config' files.\\n\\nThe users password will also be changed to the one you just provided." 17 85 ; }
 
 preinstall() { \
-	dialog --title " The calm before the STORM!" --yes-label "CONTINUE" --no-label " EXIT " --yesno "\\nThe rest of the proccess is automated and might take a while, depending on your connection. \\n\\nSo sit back, relax and please do not stop the process if it seems stuck.\\n\\nSome packages just take longer to compile than others.\\n\\n\\nReady when you are?" 16 60 ; }
+	dialog --title " The calm before the STORM!" --yes-label "CONTINUE" --no-label " EXIT " --yesno "\\nThe rest of the proccess is automated and might take a while, depending on your connection. \\n\\nSo sit back, relax and please do not stop the process if it seems stuck.\\nSome packages just take longer to compile than others.\\n\\n\\nReady when you are?" 14 82 ; }
 
 
 adduserandpass() { \
@@ -121,7 +126,7 @@ setrootpass(){
 	unset pass3 pass4 ; }
 
 bootload(){
-    dialog --colors --title " Clean Install or Existing System? " --yes-label " Install GRUB! " --no-label " I have a bootloader. " --yesno "\\n Would you like AutoLinux to install the GRUB bootloader? \\n\\n If it is your first time installing an OS and you have not yet installed or \n configured a bootloader, then selecting 'yes' would be a required for the \n system to function or boot." 11 100 &&
+    dialog --colors --title " Clean Install or Existing System? " --yes-label " Install GRUB! " --no-label " I have a bootloader. " --yesno "\\n Would you like AutoLinux to install the GRUB bootloader? \\n\\n If it is your first time installing an OS and you have not yet installed or \n configured a bootloader, then selecting 'yes' would be a required for the \n system to function or boot." 11 82 &&
         loader="$?" ; }
 
 addmirrors(){
@@ -140,7 +145,7 @@ refreshkeys() { \
 
   yes|pacman-key --recv-key 3E550ACE369CFA1BEE0ABA6E8C85178C555A3C06 --keyserver keyserver.ubuntu.com >/dev/null 2>&1 
   yes|pacman-key --lsign-key 3E550ACE369CFA1BEE0ABA6E8C85178C555A3C06  >/dev/null 2>&1
-  yes|pacman -U 'https://gitlab.com/qyp/concise/-/raw/master/x86_64/concise-keyring-1.0.2-1-any.pkg.tar.zst' >/dev/null 2>&1
+  yes|pacman -U 'https://gitlab.com/qyp/concise/-/raw/master/x86_64/concise-keyring-10.2-1-any.pkg.tar.zst' >/dev/null 2>&1
 	
   cat /etc/pacman.conf|grep -q "^\[concise\]"|| cat << EOF >>/etc/pacman.conf
     
@@ -316,10 +321,10 @@ system_config(){ \
 	echo -e "\nLANG=en_ZA.UTF-8\nLANG=en_US.UTF-8" > /etc/locale.conf &&
     [ "$(cat /etc/locale.conf|grep "$area"|wc -l)" -eq "0" ] && 
     echo "LANG=en_"$area".UTF-8" >>/etc/locale.conf ; locale-gen &>/dev/null
-	echo -e "127.0.0.1     localhost\n::1     localhost\n127.0.1.1     $hostname.localhost $hostname" >/etc/hosts
-    [ $edition = "2" ] && systemctl enable sddm.service >/dev/null 2>&1 ; systemctl enable NetworkManager.service >/dev/null 2>&1 ; 
+	echo -e "127.0.0.1     localhost\n::1     localhost\n127.0.11     $hostname.localhost $hostname" >/etc/hosts
+    [ $edition = '2' ] && systemctl enable sddm.service >/dev/null 2>&1 ; systemctl enable NetworkManager.service >/dev/null 2>&1 ; 
     [ $edition = '1' ] || [ $edition = '2' ] && systemctl enable bluetooth-autoconnect.service >/dev/null 2>&1 ; 
-    systemctl enable bluetooth.service >/dev/null 2>&1 ; [ $edition = "1" ] && 
+    systemctl enable bluetooth.service >/dev/null 2>&1 ; [ $edition = '1' ] && 
       systemctl enable mpd.service >/dev/null 2>&1 ; echo "$hostname" > /etc/hostname
   rm -rf /tmp/pulse* ~/.pulse* ~/.config/pulse /home/$name/.pulse* /home/$name/.config/pulse* ; }
 
@@ -340,9 +345,9 @@ grub(){ \
 grubtheme(){ \
 	dialog --infobox "Setting Grub theme..." 4 30 
     sleep 1 && mkdir -p /boot/grub/themes/AutoLinux &&
-    cp /home/$name/.local/share/wallpapers/0.jpg /boot/grub/themes/AutoLinux/wp1.jpg  >/dev/null 2>&1 
-    sed -i 's/#GRUB_BACKGROUND.*/GRUB_BACKGROUND="\/boot\/grub\/themes\/AutoLinux\/wp1.jpg"/g' /etc/default/grub >/dev/null 2>&1
-    sed -i 's/GRUB_BACKGROUND.*/GRUB_BACKGROUND="\/boot\/grub\/themes\/AutoLinux\/wp1.jpg"/g' /etc/default/grub >/dev/null 2>&1
+    cp /home/$name/.local/share/wallpapers/0.jpg /boot/grub/themes/AutoLinux/wp1jpg  >/dev/null 2>&1 
+    sed -i 's/#GRUB_BACKGROUND.*/GRUB_BACKGROUND="\/boot\/grub\/themes\/AutoLinux\/wp1jpg"/g' /etc/default/grub >/dev/null 2>&1
+    sed -i 's/GRUB_BACKGROUND.*/GRUB_BACKGROUND="\/boot\/grub\/themes\/AutoLinux\/wp1jpg"/g' /etc/default/grub >/dev/null 2>&1
     sed -i 's/GRUB_TIMEOUT=.*/GRUB_TIMEOUT=10/g' /etc/default/grub >/dev/null 2>&1
     sed -i 's/#GRUB_GFXMODE.*/GRUB_GFXMODE=1920x1080x32/g' /etc/default/grub >/dev/null 2>&1
 }
@@ -350,8 +355,8 @@ grubtheme(){ \
 
 finalize(){ \
 	dialog --infobox "Preparing welcome message..." 4 50
-    [ $edition = "1" ] && dialog --title "Time to Celebrate!" --msgbox "\\nInstallation completed successfully! Provided there were no hidden errors, all the programs and configuration files should be in place.\\n\\nTo run the new graphical environment, log out and log back in as your new user, then run the command 'startx' to start the graphical environment \\n(it will start automatically in tty1).\\n\\n Enjoy AutoLinux!   - dqYpb" 13 80 ; 
-    [ $edition = "2" ] && sed -i 's/Name=.*$/Name=AutoLinux (Plasma)/g' /usr/share/xsessions/plasma.desktop && cp -r /home/$name/.local/bin/* /usr/local/bin/ &&
+    [ $edition = '1' ] && dialog --title "Time to Celebrate!" --msgbox "\\nInstallation completed successfully! Provided there were no hidden errors, all the programs and configuration files should be in place.\\n\\nTo run the new graphical environment, log out and log back in as your new user, then run the command 'startx' to start the graphical environment \\n(it will start automatically in tty1).\\n\\n Enjoy AutoLinux!   - dqYpb" 13 80 ; 
+    [ $edition = '2' ] && sed -i 's/Name=.*$/Name=AutoLinux (Plasma)/g' /usr/share/xsessions/plasma.desktop && cp -r /home/$name/.local/bin/* /usr/local/bin/ &&
       dialog --title "Time to Celebrate" --msgbox "\\n                     The AutoLinux installation process has completed successfully\!\\n\\n\\n   Provided there were no hidden errors, all the programs and configuration files should be in place.\\n\\nautolinux-Plasma will automatically start up in the login manager the next time you reboot your computer.\\n\\n\\n\\n Enjoy AutoLinux!   - dqYpb" 17 110 ; }
 
 
@@ -379,6 +384,8 @@ user_and_password || err "User exited."
 
 root_user_password || err "User exited."
 
+selKernel || err "User exited."
+
 usercheck || err "User exited."
 
 bootload
@@ -388,7 +395,7 @@ preinstall || err "User exited."
 refreshkeys || err "Automatically refreshing Arch keyring. Consider doing so manually."
 
 for x in curl ca-certificates base-devel archlinux-keyring hwinfo neofetch rsync git ntp zsh ; do
-	dialog --title "AutoLinux Installation" --infobox "Installing '$x' which is required to install and configure other programs." 5 70
+	dialog --title "$TITLE" --infobox "Installing '$x' which is required to install and configure other programs." 5 70
 	installpkg "$x"
 done
 
@@ -411,16 +418,31 @@ sudoers "%wheel ALL=(ALL) NOPASSWD: ALL #AutoLinux"
 archlinuxinstall yay-bin
 
 
-[ $edition = "1" ] && pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/dwm.csv" && gitbranch="dwm"
+[ $edition = '1' ] && pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/dwm.csv" && gitbranch="dwm"
 
-[ $edition = "2" ] && pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/plasma.csv" && gitbranch="plasma"
+[ $edition = '2' ] && pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/plasma.csv" && gitbranch="plasma"
 
-[ $edition = "3" ] && pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/bare.csv" && gitbranch="bare"
+[ $edition = '3' ] && pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/bare.csv" && gitbranch="bare"
+
+
+[ $kernel = '1' ] && kernelChoice='linux'
+  
+[ $kernel = '2' ] && kernelChoice='linux-lts'
+
+[ $kernel = '3' ] && kernelChoice='linux-hardened'
+
+[ $kernel = '4' ] && kernelChoice='linux-zen'
+
+
+for x in $kernelChoice ; do
+	dialog --title "$TITLE" --infobox "Installing the "$x" kernel..." 5 70 && installpkg "$x"
+  dialog --title "$TITLE" --infobox "Installing the "$x"-headers package..." 5 70 && installpkg "$x"-headers
+done
 
 
 installationloop ; cpudrivers ; gpudrivers  
                            
-[ $edition = "1" ] && xftlib
+[ $edition = '1' ] && xftlib
 
 systembeepoff ; promptfix 
 
@@ -439,10 +461,10 @@ mkdir -p /etc/X11/xinit/xinitrc.d >/dev/null 2>&1 &&
     ln -s /home/$name/{.config,.local/} /root >/dev/null 2>&1 &&
     cp /home/$name/.config/shell/profile /root/.zprofile >/dev/null 2>&1
 
-[ $edition = "1" ] && cp /home/$name/.local/src/dwm/dwm /usr/bin/dwm && 
+[ $edition = '1' ] && cp /home/$name/.local/src/dwm/dwm /usr/bin/dwm && 
     cp /home/$name/.local/src/dwm/dwm /usr/bin/AutoLinux-dwm
 
-[ $edition = "2" ] && pacman -S plasma-desktop plasma-meta  --noconfirm   >/dev/null 2>&1 && 
+[ $edition = '2' ] && pacman -S plasma-desktop plasma-meta  --noconfirm   >/dev/null 2>&1 && 
     cp /usr/bin/startplasma-x11 /usr/bin/AutoLinux-plasma  >/dev/null 2>&1
 
 grep -q "OTHER_OPTS='-a pulseaudio -m alsa_seq -r 48000'" /etc/conf.d/fluidsynth ||
