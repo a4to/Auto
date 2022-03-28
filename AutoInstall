@@ -422,8 +422,6 @@ archlinuxinstall yay-bin
 
 [ $edition = '2' ] && pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/plasma.csv" && gitbranch="plasma"
 
-[ $edition = '3' ] && pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/bare.csv" && gitbranch="bare"
-
 
 [ $kernel = '1' ] && kernelChoice='linux'
   
@@ -440,7 +438,7 @@ for x in $kernelChoice ; do
 done
 
 
-installationloop ; cpudrivers ; gpudrivers  
+! [ $edition = '3' ] && installationloop && cpudrivers && gpudrivers  
                            
 [ $edition = '1' ] && xftlib
 
