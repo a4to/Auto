@@ -129,7 +129,7 @@ cp_scripts(){ cd $srcdir && cp AutoInstall /mnt/tmp/ ; cp AutoInstall  /mnt/usr/
 
 success(){ clear ; setfont ter-p16n && echo -e "" &&
 figlet -toc 'Success!'|lolcat ; echo -e "\n" ; sleep 2 && 
-arch-chroot /mnt /usr/bin/AutoInstall ; clear ; }
+arch-chroot /mnt /usr/bin/AutoInstall ; }
 
 check_root ; requierments ; welcome ; init ; 
 partitioning ; base_install && post_install ; drives ; 
