@@ -77,7 +77,7 @@ initmsg2(){
 	dialog --colors --title " Please Note :" --yes-label " Lets Boogie! " --no-label " Lets not boogie :| " --yesno "\\n  An Arch Linux, or Arch based system is required for the installation of AutoLinux.\\n\\n       If you are running any other distrobution the installation will fail." 9 90 ; }
 
 selKernel(){
-  kernel="$(dialog --stdout --colors --title "Kernel Selection" --menu "             Please choose your kernel:\\n (If unsure, just select the default linux kernel)" 14 56 6 "${KERNELS[@]}" 3>&1 1>&2 2>&3 3>&1)" ; } 
+  kernel="$(dialog --colors --title "Kernel Selection" --menu "             Please choose your kernel:\\n (If unsure, just select the default linux kernel)" 14 56 6 "${KERNELS[@]}" 3>&1 1>&2 2>&3 3>&1)" ; } 
 
 
 user_and_password() {
@@ -355,9 +355,9 @@ grubtheme(){ \
 
 finalize(){ \
 	dialog --infobox "Preparing welcome message..." 4 50
-    [ $edition = '1' ] && dialog --title "Time to Celebrate!" --msgbox "\\nInstallation completed successfully! Provided there were no hidden errors, all the programs and configuration files should be in place.\\n\\nTo run the new graphical environment, log out and log back in as your new user, then run the command 'startx' to start the graphical environment \\n(it will start automatically in tty1).\\n\\n Enjoy AutoLinux!   - dqYpb" 13 80 ; 
-    [ $edition = '2' ] && sed -i 's/Name=.*$/Name=AutoLinux (Plasma)/g' /usr/share/xsessions/plasma.desktop && cp -r /home/$name/.local/bin/* /usr/local/bin/ &&
-      dialog --title "Time to Celebrate" --msgbox "\\n                     The AutoLinux installation process has completed successfully\!\\n\\n\\n   Provided there were no hidden errors, all the programs and configuration files should be in place.\\n\\nautolinux-Plasma will automatically start up in the login manager the next time you reboot your computer.\\n\\n\\n\\n Enjoy AutoLinux!   - dqYpb" 17 110 ; }
+  case $edition in
+    2) sed -i 's/Name=.*$/Name=AutoLinux (Plasma)/g' /usr/share/xsessions/plasma.desktop && cp -r /home/$name/.local/bin/* /usr/local/bin/ && dialog --title "Time to Celebrate" --msgbox "\\n                     The AutoLinux installation process has completed successfully\!\\n\\n\\n   Provided there were no hidden errors, all the programs and configuration files should be in place.\\n\\nautolinux-Plasma will automatically start up in the login manager the next time you reboot your computer.\\n\\n\\n\\n Enjoy AutoLinux!   - a4to" 17 110 ;;
+    *) dialog --title "Time to Celebrate!" --msgbox "\\nInstallation completed successfully! Provided there were no hidden errors, all the programs and configuration files should be in place.\\n\\nTo run the new graphical environment, log out and log back in as your new user, then run the command 'startx' to start the graphical environment \\n(it will start automatically in tty1).\\n\\n Enjoy AutoLinux!   - a4to" 13 80 ;; esac ; } 
 
 
 rebootmsg(){ \
@@ -417,24 +417,22 @@ sudoers "%wheel ALL=(ALL) NOPASSWD: ALL #AutoLinux"
 
 archlinuxinstall yay-bin
 
+case $edition in
+  1) pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/dwm.csv" && gitbranch="dwm" ;;
+  2) pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/plasma.csv" && gitbranch="plasma" ;;
+esac
 
-[ $edition = '1' ] && pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/dwm.csv" && gitbranch="dwm"
-
-[ $edition = '2' ] && pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/plasma.csv" && gitbranch="plasma"
-
-
-[ $kernel = '1' ] && kernelChoice='linux'
-  
-[ $kernel = '2' ] && kernelChoice='linux-lts'
-
-[ $kernel = '3' ] && kernelChoice='linux-hardened'
-
-[ $kernel = '4' ] && kernelChoice='linux-zen'
+case $kernel in
+  1) kernelChoice='linux' ;;                            
+  2) kernelChoice='linux-lts' ;;
+  3) kernelChoice='linux-hardened' ;;
+  4) kernelChoice='linux-zen' ;;
+esac
 
 
 for x in $kernelChoice ; do
-	dialog --title "$TITLE" --infobox "Installing the "$x" kernel..." 5 70 && installpkg "$x"
-  dialog --title "$TITLE" --infobox "Installing the "$x"-headers package..." 5 70 && installpkg "$x"-headers
+	dialog --title "$TITLE" --infobox "\\nInstalling the "$x" kernel..." 5 70 && installpkg "$x"
+  dialog --title "$TITLE" --infobox "\\nInstalling the "$x" headers..." 5 70 && installpkg "$x"-headers
 done
 
 
