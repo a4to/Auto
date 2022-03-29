@@ -114,16 +114,16 @@ err "Partitioning has failed miserably..." && sleep 2 && echo "" ; }
 base_install(){	msg "  Beginning base installation..." ; sleep 2 && setfont ter-p14n ;
 
 pacstrap /mnt \
-    base base-devel multilib-devel linux-firmware linux linux-headers --needed --noconfirm &&
+    linux-firmware base base-devel --needed --noconfirm &&
     pac_conf > /mnt/etc/pacman.conf && clear && setfont ter-p16n && 
     msg "  The Base Installation was a Success!" && sleep 2 || fail ; }
 
 post_install(){ echo "" ; msg "  Installing additional system requierments..."; sleep 2 && setfont ter-p14n ;
 
 pacstrap /mnt \
-    archiso mkinitcpio mkinitcpio-archiso git curl neovim python-pynvim zsh ntfs-3g figlet xorg-xmodmap ufw networkmanager pulseaudio \
-    pulseaudio-bluetooth pulsemixer bluez bluez-tools bluez-plugins bluez-libs wget lolcat grub efibootmgr dosfstools mtools pacman-contrib fzf \
-    terminus-font os-prober  bash-completion --needed --noconfirm ; clear ; } 
+  git curl zsh wget efibootmgr dosfstools \
+  mtools pacman-contrib fzf terminus-font os-prober  \
+  bash-completion --needed --noconfirm ; clear ; } 
 
 cp_scripts(){ cd $srcdir && cp AutoInstall /mnt/tmp/ ; cp AutoInstall  /mnt/usr/bin >/dev/null 2>&1 ; }
 
