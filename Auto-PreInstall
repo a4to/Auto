@@ -231,8 +231,8 @@ post_install  || err "User Exited."
 ! [ -d /mnt/boot/EFI ] && mkdir -p /mnt/boot/EFI
 
 case $wipeType in
-  'manual') mount $(cat $selDsk)4 /mnt ;;
-  'automatic') mount $(cat $selBoot) /mnt/boot ;;
+  'manual') mount $(cat $selBoot) /mnt/boot ;;
+  'automatic') mount $(cat $selDsk)2 /mnt/boot/ ;;
   *) err "User Exited." ;; esac
 
 cp_scripts ; success && exit 0 || fail && exit 1
