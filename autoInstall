@@ -335,13 +335,13 @@ xftlib(){ \
 
 
 yesGrub(){ \
-    dialog --infobox "Initiating Bootloader..." 4 40
+    dialog --infobox "Initiating the Grub Bootloader..." 4 40
         pacman -S --noconfirm --needed grub >/dev/null 2>&1 
         ! [ -d /sys/firmware/efi/efivars ] && 
             grub-install --target=i386-pc --bootloader-id=AutoLinux --force  >/dev/null 2>&1 ;
         [ -d /sys/firmware/efi/efivars ] && pacman -S --noconfirm --needed grub efibootmgr >/dev/null 2>&1 &&
             grub-install --target=x86_64-efi --bootloader-id=AutoLinux --recheck >/dev/null 2>&1 ;
-            grub-mkconfig -o /boot/grub/grub.cfg >/dev/null 2>&1 ; }                
+            grub-mkconfig -o /boot/grub/grub.cfg >/dev/null 2>&1 ; grubtheme ; }
 
 grubtheme(){ \
 	dialog --infobox "Setting Grub theme..." 4 30 
@@ -470,7 +470,7 @@ grep -q "OTHER_OPTS='-a pulseaudio -m alsa_seq -r 48000'" /etc/conf.d/fluidsynth
 pkill -15 -x 'pulseaudio'; sudo -u "$name" pulseaudio --start
 
 
-system_config ; [ "$loader" = "0" ] && grubtheme && yesGrub
+system_config ; [ "$loader" = "0" ] && yesGrub
 
 finalize ; clear ; [ $edition = '1' ] || [ $edition = '2' ] && skell
 
