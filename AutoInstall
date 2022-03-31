@@ -400,7 +400,7 @@ for x in curl ca-certificates base-devel archlinux-keyring hwinfo neofetch rsync
 done
 
 pacman-key --init >/dev/null 2>&1; pacman-key --populate >/dev/null 2>&1
-dialog --title "AutoLinux Installation" --infobox "Synchronizing system time to ensure successful and secure installation of software..." 4 70
+dialog --title "AutoLinux Installation" --infobox "Synchronizing system time to ensure successful and secure installation of software..." 5 70
 ntpdate 0.us.pool.ntp.org >/dev/null 2>&1
 
 # newmirrors || err "User exited." 
@@ -467,11 +467,11 @@ grep -q "OTHER_OPTS='-a pulseaudio -m alsa_seq -r 48000'" /etc/conf.d/fluidsynth
 	echo "OTHER_OPTS='-a pulseaudio -m alsa_seq -r 48000'" >> /etc/conf.d/fluidsynth
 
 
-[ "$loader" = "0" ] && installpkg grub && grubtheme && yesGrub 
+[ "$loader" = "0" ] && installpkg grub && grubtheme && yesGrub pkill -15 -x 'pulseaudio' 
 
-pkill -15 -x 'pulseaudio'; sudo -u "$name" pulseaudio --start ; system_config ; finalize
+sudo -u "$name" pulseaudio --start ; system_config ; finalize ; clear 
 
-clear ; [ $edition = '1' ] || [ $edition = '2' ] && skell
+[ $edition = '1' ] || [ $edition = '2' ] && skell
 
 
 #########################################################################################################################################################################################

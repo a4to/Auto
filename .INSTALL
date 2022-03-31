@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+echo -e "\
+   \033[31m\e[106m HIIIII"
