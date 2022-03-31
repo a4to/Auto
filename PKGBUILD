@@ -16,6 +16,6 @@ sha256sums=('SKIP')
 package() {
   cd "$srcdir"
     install -Dm755 ${_pkgname}/{autoInstall,autoCleanInstall,autoPart} -t "${pkgdir}/opt/${_pkgname}"
-    install -Dm755 ${_pkgname}/{autoCleanInstall,AutoInstall,autoPart} -t "${pkgdir}/usr/bin"
+    install -Dm755 ${_pkgname}/{autoCleanInstall,autoInstall,autoPart} -t "${pkgdir}/usr/bin"
     install -Dm644 ${_pkgname}/LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 }
