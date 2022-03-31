@@ -2,7 +2,7 @@
 # ---
 _pkgname=AutoLinux
 pkgname=auto
-pkgver=2.1.1
+pkgver=3.0.1
 pkgrel=1
 pkgdesc='AutoLinux bootstrap scripts, with optional riced configs for the AutoLinux platform'
 arch=(x86_64)
@@ -15,7 +15,7 @@ sha256sums=('SKIP')
 
 package() {
   cd "$srcdir"
-    install -Dm755 ${_pkgname}/{AutoInstall,Auto-PreInstall,AutoPart} -t "${pkgdir}/opt/${_pkgname}"
-    install -Dm755 ${_pkgname}/{Auto-PreInstall,AutoInstall,AutoPart} -t "${pkgdir}/usr/bin"
+    install -Dm755 ${_pkgname}/{autoInstall,autoCleanInstall,AutoPart} -t "${pkgdir}/opt/${_pkgname}"
+    install -Dm755 ${_pkgname}/{autoCleanInstall,AutoInstall,AutoPart} -t "${pkgdir}/usr/bin"
     install -Dm644 ${_pkgname}/LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 }
