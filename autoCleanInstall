@@ -220,6 +220,14 @@ allDisks ||  err "Could not find any disks."
 
 begin || err "User Exited." 
 
+
+case "$wipeType" in
+  'manual') sudo mount $(cat $selRootFS) /mnt && completion && sleep 4 || 
+  ! [ -d /mnt/boot/EFI ] && mkdir -p /mnt/boot/EFI; sudo mount $(cat $selBoot) /mnt/boot/EFI ;;
+  'automatic') sudo mount $(cat $selDsk)4 /mnt && completion && sleep 4 || 
+  ! [ -d /mnt/boot/EFI ] && mkdir -p /mnt/boot/EFI; sudo mount $(cat $selDsk)2 /mnt/boot/EFI ;;
+esac
+
 base_install || err "User Exited."
 
 drives || err "User Exited."
@@ -227,12 +235,6 @@ drives || err "User Exited."
 post_install  || err "User Exited."
 
 
-! [ -d /mnt/boot/EFI ] && mkdir -p /mnt/boot/EFI
-
-case "$wipeType" in
-  'manual') sudo mount $(cat $selBoot) /mnt/boot/EFI ;;
-  'automatic') sudo mount $(cat $selDsk)2 /mnt/boot/EFI ;;
-esac
 
 cp_scripts ; success && exit 0 || fail && exit 1
 
