@@ -2,13 +2,13 @@
 # ---
 _pkgname=AutoLinux
 pkgname=auto
-pkgver=2.0.2
+pkgver=2.1.1
 pkgrel=1
 pkgdesc='AutoLinux bootstrap scripts, with optional riced configs for the AutoLinux platform'
 arch=(x86_64)
 url="https://gitlab.com/qYp/${_pkgname}"
 license=('MIT')
-depends=(dialog)
+depends=(dialog parted)
 makedepends=(git)                 
 source=("git+$url.git")
 sha256sums=('SKIP')

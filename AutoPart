@@ -89,31 +89,36 @@ confirm(){ \
 
 wipeDisk(){ \
   PRTED="sudo parted -s $(cat $selDsk)"
-  dialog --colors --title "Partitioning" --infobox "Repartitioning $(cat $selDsk). Please be patient..." 3 60 ;
-  $PRTED wipefs >/dev/null 2>&1
+  sudo wipefs $(cat $selDsk)
+  dialog --colors --title "Partitioning" --infobox "Preparing $(cat $selDsk)1 - the legacy boot partition, Pease be patient..." 3 80 ;
   $PRTED mklabel gpt >/dev/null 2>&1
   $PRTED mkpart primary 1 3 >/dev/null 2>&1
   $PRTED name 1 legacy >/dev/null 2>&1
   $PRTED set 1 bios_grub on
+  dialog --colors --title "Partitioning" --infobox "Preparing $(cat $selDsk)2 - the uefi boot partition, Pease be patient..." 3 80 ;
   $PRTED mkpart primary fat32 3MiB 256MiB >/dev/null 2>&1
   $PRTED name 2 boot >/dev/null 2>&1
   $PRTED set 2 boot on
+  yes|sudo mkfs.fat -F32 $(cat $selDsk)2 >/dev/null 2>&1
+  dialog --colors --title "Partitioning" --infobox "Preparing $(cat $selDsk)3 - the swap partition, Pease be patient..." 3 80 ;
   $PRTED mkpart primary 256MiB 4352MiB >/dev/null 2>&1
   $PRTED name 3 swap >/dev/null 2>&1
   $PRTED set 3 swap on
+  yes|sudo mkswap $(cat $selDsk)3 >/dev/null 2>&1 ;
+  sudo swapon $(cat $selDsk)3 >/dev/null 2>&1
+  dialog --colors --title "Partitioning" --infobox "Preparing $(cat $selDsk)4 - the root filesystem, Pease be patient..." 3 80 ;
   $PRTED mkpart primary ext4 4352MiB 100% >/dev/null 2>&1
   $PRTED name 4 rootfs >/dev/null 2>&1
-  yes|sudo mkfs.fat -F32 $(cat $selDsk)2 >/dev/null 2>&1
-  yes|sudo mkswap $(cat $selDsk)3 >/dev/null 2>&1 ;
-  yes|sudo mkfs.ext4 $(cat $selDsk)4 >/dev/null 2>&1 ; 
-  sudo swapon $(cat $selDsk)3 >/dev/null 2>&1 ; }
+  yes|sudo mkfs.ext4 $(cat $selDsk)4 >/dev/null 2>&1 ; }
 
 definedPartitioning(){ \
-  dialog --colors --title "Partitioning" --infobox "Repartitioning $(cat $selDsk). Please be patient..." 3 60 ;
+  dialog --colors --title "Partitioning" --infobox "Preparing the $(cat $selBoot) - the boot partition, Pease be patient..." 3 80 ;
   yes|sudo mkfs.fat -F32 $(cat $selBoot) >/dev/null 2>&1
+  [ -n "$(cat $selSwap)" ] && dialog --colors --title "Partitioning" --infobox "Preparing the $(cat $selSwap) - the swap partition, Pease be patient..." 3 80 ;
   [ -n "$(cat $selSwap)" ] && yes|sudo mkswap $(cat $selSwap) >/dev/null 2>&1
+  dialog --colors --title "Partitioning" --infobox "Preparing  $(cat $selRootFS) - the root filesystem, Pease be patient..." 3 80 ;
   yes|sudo mkfs.ext4 $(cat $selRootFS) >/dev/null 2>&1
-  sudo swapon $(cat $selSwap) >/dev/null 2>&1
+  [ -n "$(cat $selSwap)" ] && sudo swapon $(cat $selSwap) >/dev/null 2>&1
 }
 
 definedConfirm(){ \
@@ -123,7 +128,8 @@ definedConfirm(){ \
   --yesno "\\nAre you happy with your selection?\\n\\n1. Boot Partition: $(cat $selBoot)\\n2. Swap Partition: $(cat $selSwap)\\n3. Root File System: $(cat $selRootFS)\\n\\nOnce you have confirmed, there in no going back." 14 80 ;
   defConf=$? ; }
 
-completion(){ dialog --colors --title "Partitioning" --infobox "Partitioning has Completed Successfully!" 3 60 ; }
+completion(){ dialog --colors --title " ~ AutoLinux ~ " \
+  --infobox "Partitioning Completed Successfully! Now continuing to install base system..." 5 85 ; }
 
 begin(){ \
 n=1 ; selDisk || err "User Exited."
@@ -132,12 +138,12 @@ wholeDisk || err "User Exited."
   
 case "$(cat $wholeDisk)" in
   1) getDisk && begin ;;
-  0) selectParts && definedConfirm && 
-    definedPartitioning && completion || err "User Exited." ;;
-  3) confirm &&  \
-    [ $WIPE -eq 0 ] && begin ;
-    [ $WIPE -eq 1 ] && wipeDisk && 
-      completion || err "User Exited." ;;
+  0) selectParts && definedConfirm && definedPartitioning && wipeType='manual'  
+    mount $selRootFS /mnt && completion || err "User Exited.";;  
+  3) confirm && case "$(echo $WIPE)" in 
+    '0')  begin ;;
+    '1')  wipeDisk && completion && sleep 4 && wipeType='automatic'; mount $(cat $selDsk)4 /mnt
+  esac ;; 
 esac ; }
 
 allDisks ||  err "Could not find any disks." ;

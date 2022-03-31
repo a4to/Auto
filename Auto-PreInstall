@@ -41,11 +41,20 @@ genfstab -U /mnt > /mnt/etc/fstab ; }
 
 #########################################################################################################################################################################################
 
+lines(){ cat $1|wc -l; }
+
+selectParts(){ selBoot ; selSwap ; selRootFS ; }
+
+err(){ echo >&2 "$(tput bold; tput setaf 1)[-] ERROR: ${*}$(tput sgr0)";exit 1; }
+
+dsks=$(mktemp)        ; selDsk=$(mktemp)
+selPar=$(mktemp)      ; selPart=$(mktemp)
+selSwap=$(mktemp)     ; selBoot=$(mktemp)
+selRootFS=$(mktemp)   ; selSwap=$(mktemp)
+wholeDisk=$(mktemp)   ; confirm=$(mktemp)
+partitions=$(mktemp)
+
 srcdir=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd && echo)
-
-msg(){ echo "$(tput bold; tput setaf 2)[+] ${*}$(tput sgr0)"; }
-
-err(){ echo >&2 "$(tput bold; tput setaf 1)[-] ERROR: ${*}$(tput sgr0)" && exit 1 ; }
 
 warn(){ echo >&2 "$(tput bold; tput setaf 1)[!] WARNING: ${*}$(tput sgr0)"; }
 
@@ -55,85 +64,179 @@ mkmnt(){ $(sudo mkdir -p /mnt/home/drives/"$1" >/dev/null 2>&1 && $(mount /dev/"
 
 fail(){ err "   ERROR! CATASTROPHIC FAILIURE CAPTAIN . . ." ; sleep 2 ; }
 
-requierments(){ pacman -Syy  figlet lolcat terminus-font sudo   --needed --noconfirm 2>/dev/null && setfont ter-p16n; }
+requierments(){ pacman -Syy  figlet lolcat parted sudo   --needed --noconfirm 2>/dev/null && setfont ter-p16n >/dev/null 2>&1 ; }
 
-welcome(){ clear ; figlet -toc '|-WELCOME-| - TO - |-AUTOLINUX-|' | lolcat ; sleep 1;
-    echo -e "\n\n  Please use 'cfdisk' (recommended) or 'fdisk' to partition your drive before running this script.\n  Generally, a 550M EFI partition, a 2-10G swap partition,  and the rest of space dedicated to linux filesystem.\n" ; sleep 5 ; }
+welcome(){ clear ; figlet -toc '|-WELCOME-| - TO - |-AUTOLINUX-|' | lolcat ; sleep 1; }
 
-
-pac_conf(){
-echo -e "\n# GENERAL OPTIONS\n\n[options]\n\n#RootDir     = /\n#DBPath      = /var/lib/pacman/\n#CacheDir    = /var/cache/pacman/pkg/
-#LogFile     = /var/log/pacman.log\n#GPGDir      = /etc/pacman.d/gnupg/\n#HookDir     = /etc/pacman.d/hooks/\nHoldPkg      = pacman glibc
-#XferCommand = /usr/bin/curl -L -C - -f -o %o %u\n#XferCommand = /usr/bin/wget --passive-ftp -c -O %o %u\n#CleanMethod = KeepInstalled
-Architecture = auto\n\n#UseSyslog\nColor\nCheckSpace\nVerbosePkgLists\nILoveCandy\nParallelDownloads = 10\n\n\nSigLevel    = Required DatabaseOptional
-LocalFileSigLevel = Optional\n#RemoteFileSigLevel = Required\n\n\n[core]\nInclude = /etc/pacman.d/mirrorlist\n\n[extra]\nInclude = /etc/pacman.d/mirrorlist\n
-[community]\nInclude = /etc/pacman.d/mirrorlist\n\n[multilib]\nInclude = /etc/pacman.d/mirrorlist"; } 
 
 refreshkeys() { \
   pacman -U --noconfirm https://gitlab.com/qyp/concise/-/raw/master/concise-keyring-1.0.3-1-any.pkg.tar.xz
   /opt/Concise/init.sh ; }
 
 init(){  
-pac_conf > /etc/pacman.conf &&
+pacConf /etc/pacman.conf &&
 timedatectl set-ntp true ; }
 
-partitioning(){ 
-setfont ter-p16n &&
+pacConf(){ \
+dialog --infobox "Updating Repos and Keys..." 4 40  
+for repo in core extra community multilib; do
+grep -q "^\[$repo\]" /etc/pacman.conf || echo "[$repo]
+Include = /etc/pacman.d/mirrorlist
+" >> $1 ; done ; }
 
-echo  -e "\n    Please specify the boot partition:"                                  
-read -p "    ( Only the partition name, NOT the full path. )   : /dev/" boot 
-case "$boot" in 
-	''n) mkfs.vfat /dev/nvme0n1p1 ;;
-      s) mkfs.vfat /dev/sda4 ;;
-  	  *) mkfs.vfat /dev/"$boot"  
-esac 
-echo -e "\n    Please specify a swap partition if wanted,"                                  
-read -p "    ( Only the partition name, NOT the full path. )  :  /dev/" swap 
-case "$swap" in 
-	''n)
-	mkswap /dev/nvme0n1p2 && swapon /dev/nvme0n1p2 ;;
-      s) mkswap /dev/sda3 && swapon /dev/sda3 ;; 
-     "") ;; *) mkswap /dev/"$swap" && swapon /dev/"$swap" 
-esac
-echo -e "\n    Please specify partition name where base system will be installed. "                                 
-read -p "    ( Only the partition name, NOT the full path. )   :  /dev/" drive 
-case "$drive" in
-	''n) mkfs.ext4 /dev/nvme0n1p3 && mount /dev/nvme0n1p3 /mnt ;;
-      s) mkfs.ext4 /dev/sda5 && mount /dev/sda5 /mnt ;;
-	  *) mkfs.ext4 /dev/"$drive" && mount /dev/"$drive" /mnt 
-esac  
+selDisk(){ \
+  dialog --stdout --colors  --title "Partitioning" \
+  --menu "       Which drive will be used for the AutoLinux installation?" 30 65 0 \
+  "${drives[@]}" > $selDsk
+}
 
-[ ! -d /mnt/boot/EFI ] && mkdir -p /mnt/boot/EFI ;
-if [ $boot = n ]; then mount /dev/nvme0n1p1 /mnt/boot/EFI; fi
-if [ $boot = s ]; then mount /dev/sda4 /mnt/boot/EFI; fi
-mount /dev/$boot /mnt/boot/EFI 2>/dev/null ; clear ; setfont ter-p16n ;
+selBoot(){ \
+  dialog --stdout --no-cancel --colors  --title "Partitioning" \
+  --menu " Which Partition will be used for the bootloader?" 30 65 0 \
+  "${parts[@]}"  > $selBoot
+}
 
-msg "  Partitioning Completed Successfully!"  || 
-err "Partitioning has failed miserably..." && sleep 2 && echo "" ; }
+selSwap(){ \
+  dialog --stdout --colors  --title "Partitioning" \
+  --ok-label "Continue" \
+  --cancel-label "No Swap" \
+  --menu " Which Partition will be used for the swap?" 30 65 0 \
+  "${parts[@]}" > $selSwap
+}
 
-base_install(){	msg "  Beginning base installation..." ; sleep 2 && setfont ter-p14n ;
+selRootFS(){ \
+  dialog --stdout --no-cancel --colors  --title "Partitioning" \
+  --menu " Which Partition will be used for the root filesystem?" 30 65 0 \
+  "${parts[@]}" > $selRootFS
+}
 
-pacstrap /mnt \
-    linux-firmware base base-devel --needed --noconfirm &&
-    pac_conf > /mnt/etc/pacman.conf && clear && setfont ter-p16n && 
-    msg "  The Base Installation was a Success!" && sleep 2 || fail ; }
+wholeDisk(){ \
+  dialog --stdout --colors --extra-button \
+  --title "Partitioning" \
+  --extra-label "WIPE DISK" \
+  --yes-label 'Select Partitions' \
+  --no-label 'Go Back' \
+  --yesno "Would you like to wipe the entire drive, or manually select partitions?" 6 80 ; 
+  echo $? > $wholeDisk
+}
 
-post_install(){ echo "" ; msg "  Installing additional system requierments..."; sleep 2 && setfont ter-p14n ;
+allDisks(){ \
+sudo fdisk -l|grep -B 1 "Disk model:"|sed 's/,.*sectors//g;s/://g;s/Disk\s*\///g;s/Disk model //g'|xargs|sed \
+'s/ -- /\n/g;s/dev/"\/dev/g;s/\n/"\n/g;s/^/drives=(\n/g;s/$/"\n)/g'|sed 's/ /" "/;s/iB /iB    /' >$dsks ; source $dsks ; }
 
-pacstrap /mnt \
-  git curl zsh wget efibootmgr dosfstools \
-  mtools pacman-contrib fzf terminus-font os-prober  \
-  bash-completion --needed --noconfirm ; clear ; } 
+getDisk(){ \
+eval $(sudo fdisk -lo Device,Size,Type|grep $(cat $selDsk) >$selPar ; n=1 ; echo "parts=(" >$selPart
+cat $selPar|while read x; do echo "$(sudo head -n $n $selPar|tail -n1|cut -d' ' -f1|sed "s/^/'/;s/$/'/")\
+$(echo $x|cut -d' ' -f2-|sed "s/^/\t\'/;s/$/\'/")"|sed '/Disk.*bytes,.*sectors/d'; ((n++)) ; done >>$selPart &&
+echo -e ")" >>$selPart) ; source $selPart ; }
+
+confirm(){ \
+  dialog --stdout --colors --title "Partitioning" \
+  --yes-label 'NO. Go Back' \
+  --no-label 'YES. Continue' \
+  --yesno "\\nAre you sure you want to completely wipe $(cat $selDsk)?\\n\\nThis action CANNOT be undone." 9 90 ;
+  WIPE=$? ; }
+
+wipeDisk(){ \
+  PRTED="sudo parted -s $(cat $selDsk)"
+  sudo wipefs $(cat $selDsk)
+  dialog --colors --title "Partitioning" --infobox "Preparing $(cat $selDsk)1 - the legacy boot partition, Pease be patient..." 3 80 ;
+  $PRTED mklabel gpt >/dev/null 2>&1
+  $PRTED mkpart primary 1 3 >/dev/null 2>&1
+  $PRTED name 1 legacy >/dev/null 2>&1
+  $PRTED set 1 bios_grub on
+  dialog --colors --title "Partitioning" --infobox "Preparing $(cat $selDsk)2 - the uefi boot partition, Pease be patient..." 3 80 ;
+  $PRTED mkpart primary fat32 3MiB 256MiB >/dev/null 2>&1
+  $PRTED name 2 boot >/dev/null 2>&1
+  $PRTED set 2 boot on
+  yes|sudo mkfs.fat -F32 $(cat $selDsk)2 >/dev/null 2>&1
+  dialog --colors --title "Partitioning" --infobox "Preparing $(cat $selDsk)3 - the swap partition, Pease be patient..." 3 80 ;
+  $PRTED mkpart primary 256MiB 4352MiB >/dev/null 2>&1
+  $PRTED name 3 swap >/dev/null 2>&1
+  $PRTED set 3 swap on
+  yes|sudo mkswap $(cat $selDsk)3 >/dev/null 2>&1 ;
+  sudo swapon $(cat $selDsk)3 >/dev/null 2>&1
+  dialog --colors --title "Partitioning" --infobox "Preparing $(cat $selDsk)4 - the root filesystem, Pease be patient..." 3 80 ;
+  $PRTED mkpart primary ext4 4352MiB 100% >/dev/null 2>&1
+  $PRTED name 4 rootfs >/dev/null 2>&1
+  yes|sudo mkfs.ext4 $(cat $selDsk)4 >/dev/null 2>&1 ; }
+
+definedPartitioning(){ \
+  dialog --colors --title "Partitioning" --infobox "Preparing the $(cat $selBoot) - the boot partition, Pease be patient..." 3 80 ;
+  yes|sudo mkfs.fat -F32 $(cat $selBoot) >/dev/null 2>&1
+  [ -n "$(cat $selSwap)" ] && dialog --colors --title "Partitioning" --infobox "Preparing the $(cat $selSwap) - the swap partition, Pease be patient..." 3 80 ;
+  [ -n "$(cat $selSwap)" ] && yes|sudo mkswap $(cat $selSwap) >/dev/null 2>&1
+  dialog --colors --title "Partitioning" --infobox "Preparing  $(cat $selRootFS) - the root filesystem, Pease be patient..." 3 80 ;
+  yes|sudo mkfs.ext4 $(cat $selRootFS) >/dev/null 2>&1
+  [ -n "$(cat $selSwap)" ] && sudo swapon $(cat $selSwap) >/dev/null 2>&1
+}
+
+definedConfirm(){ \
+  dialog --colors --title "Partitioning" \
+  --yes-label "Im Sure" \
+  --no-label "Wait, Go Back" \
+  --yesno "\\nAre you happy with your selection?\\n\\n1. Boot Partition: $(cat $selBoot)\\n2. Swap Partition: $(cat $selSwap)\\n3. Root File System: $(cat $selRootFS)\\n\\nOnce you have confirmed, there in no going back." 14 80 ;
+  defConf=$? ; }
+
+completion(){ dialog --colors --title " ~ AutoLinux ~ " \
+  --infobox "Partitioning Completed Successfully! Now continuing to install base system..." 5 85 ; }
+
+begin(){ \
+n=1 ; selDisk || err "User Exited."
+getDisk || err "User Exited."
+wholeDisk || err "User Exited."
+  
+case "$(cat $wholeDisk)" in
+  1) getDisk && begin ;;
+  0) selectParts && definedConfirm && definedPartitioning && wipeType='manual'  
+    mount $selRootFS /mnt && completion || err "User Exited.";;  
+  3) confirm && case "$(echo $WIPE)" in 
+    '0')  begin ;;
+    '1')  wipeDisk && completion && sleep 4 && wipeType='automatic'; mount $(cat $selDsk)4 /mnt
+  esac ;; 
+esac ; }
+
+base_install(){	\
+  for x in linux-firmware base base-devel; do
+    dialog --colors --title " ~ AutoLinux ~ " --infobox "Installing $x, the fundaemental system packages..." 3 60 ;
+    pacstrap /mnt $x --needed --noconfirm >/dev/null 2>&1 &&
+    pacConf /mnt/etc/pacman.conf >/dev/null 2>&1 ; done ; }
+
+post_install(){ \
+  for x in git curl zsh wget efibootmgr dosfstools mtools pacman-contrib fzf terminus-font os-prober bash-completion; do
+    dialog --colors --title " ~ AutoLinux ~ " --infobox "Installing $x, needed for the installation..." 3 60 ;
+    pacstrap /mnt $x --needed --noconfirm >/dev/null 2>&1 ; clear ; done ; }
 
 cp_scripts(){ cd $srcdir && cp AutoInstall /mnt/tmp/ ; cp AutoInstall  /mnt/usr/bin >/dev/null 2>&1 ; }
 
-success(){ clear ; setfont ter-p16n && echo -e "" &&
+success(){ \
 figlet -toc 'Success!'|lolcat ; echo -e "\n" ; sleep 2 && 
-arch-chroot /mnt /usr/bin/AutoInstall ; }
+arch-chroot /mnt /usr/bin/AutoInstall
+}
 
-check_root ; requierments ; welcome ; init ; 
-partitioning ; base_install && post_install ; drives ; 
+
+check_root ; requierments ; welcome ; init 
+
+allDisks ||  err "Could not find any disks."
+
+begin || err "User Exited." 
+
+base_install || err "User Exited."
+
+drives || err "User Exited."
+
+post_install  || err "User Exited."
+
+
+! [ -d /mnt/boot/EFI ] && mkdir -p /mnt/boot/EFI
+
+case $wipeType in
+  'manual') mount $(cat $selDsk)4 /mnt ;;
+  'automatic') mount $(cat $selBoot) /mnt/boot ;;
+  *) err "User Exited." ;; esac
+
 cp_scripts ; success && exit 0 || fail && exit 1
+
 
 #########################################################################################################################################################################################
 #########################################################################################################################################################################################
