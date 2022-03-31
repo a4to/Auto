@@ -2,9 +2,9 @@
 # ---
 _pkgname=AutoLinux
 pkgname=auto
-pkgver=3.0.2
+pkgver=3.0.3
 pkgrel=1
-pkgdesc='AutoLinux bootstrap scripts, with optional riced configs for the AutoLinux platform'
+pkgdesc='ArchLinux bootstrap and partitioning scripts, with optional AutoLinuxOS configs.'
 arch=(x86_64)
 url="https://gitlab.com/qYp/${_pkgname}"
 license=('MIT')

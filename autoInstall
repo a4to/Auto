@@ -421,6 +421,7 @@ archlinuxinstall yay-bin
 case $edition in
   1) pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/dwm.csv" && gitbranch="dwm" ;;
   2) pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/plasma.csv" && gitbranch="plasma" ;;
+  2) pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/bare.csv" && gitbranch="bare" ;;
 esac
 
 case $kernel in
