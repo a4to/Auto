@@ -189,7 +189,7 @@ wholeDisk || err "User Exited."
 case "$(cat $wholeDisk)" in
   1) getDisk && begin ;;
   0) selectParts && definedConfirm && definedPartitioning && wipeType='manual'  
-    mount $selRootFS /mnt && completion || err "User Exited.";;  
+    mount $(cat $selRootFS) /mnt && completion || err "User Exited.";;  
   3) confirm && case "$(echo $WIPE)" in 
     '0')  begin ;;
     '1')  wipeDisk && completion && sleep 4 && wipeType='automatic'; mount $(cat $selDsk)4 /mnt
