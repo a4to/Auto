@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 #########################################################################################################################################################################################
 ##                                                                A U T O L I N U X    B O O T S T R A P    S C R I P T                                                                ##
 #########################################################################################################################################################################################
@@ -188,8 +188,7 @@ wholeDisk || err "User Exited."
   
 case "$(cat $wholeDisk)" in
   1) getDisk && begin ;;
-  0) selectParts && definedConfirm && definedPartitioning ; wipeType='manual'  
-    mount $(cat $selRootFS) /mnt && completion && sleep 5 || err "User Exited.";;  
+  0) selectParts && definedConfirm && definedPartitioning && wipeType='manual' && completion && sleep 5 ;;  
   3) confirm && case "$(echo $WIPE)" in 
     '0')  begin ;;
     '1')  wipeDisk && completion ; sleep 4 && wipeType='automatic'; mount $(cat $selDsk)4 /mnt
@@ -198,20 +197,20 @@ esac ; }
 
 base_install(){	\
   for x in linux-firmware base base-devel; do
-    dialog --colors --title " ~ AutoLinux ~ " --infobox "Installing $x, the fundaemental system packages..." 3 60 ;
+    dialog --colors --title " ~ AutoLinux ~ " --infobox "Installing $x, part of the fundaemental system packages..." 3 80 ;
     pacstrap /mnt $x --needed --noconfirm >/dev/null 2>&1 &&
     pacConf /mnt/etc/pacman.conf >/dev/null 2>&1 ; done ; }
 
 post_install(){ \
-  for x in git curl zsh wget efibootmgr dosfstools mtools pacman-contrib fzf terminus-font os-prober bash-completion; do
-    dialog --colors --title " ~ AutoLinux ~ " --infobox "Installing $x, needed for the installation..." 3 60 ;
+  for x in efibootmgr dosfstools mtools pacman-contrib os-prober; do
+    dialog --colors --title " ~ AutoLinux ~ " --infobox "Installing $x, needed for the installation..." 3 80 ;
     pacstrap /mnt $x --needed --noconfirm >/dev/null 2>&1 ; clear ; done ; }
 
 cp_scripts(){ cd $srcdir && cp autoInstall  /mnt/usr/bin >/dev/null 2>&1 ; }
 
 success(){ \
 figlet -toc 'Success!'|lolcat ; echo -e "\n" ; sleep 2 && 
-arch-chroot /mnt /usr/bin/autoInstall
+arch-chroot /mnt bash /usr/bin/autoInstall
 }
 
 
@@ -230,10 +229,10 @@ post_install  || err "User Exited."
 
 ! [ -d /mnt/boot/EFI ] && mkdir -p /mnt/boot/EFI
 
-case $wipeType in
-  'manual') mount $(cat $selBoot) /mnt/boot ;;
-  'automatic') mount $(cat $selDsk)2 /mnt/boot/ ;;
-  *) err "User Exited." ;; esac
+case "$wipeType" in
+  'manual') sudo mount $(cat $selBoot) /mnt/boot/EFI ;;
+  'automatic') sudo mount $(cat $selDsk)2 /mnt/boot/EFI ;;
+esac
 
 cp_scripts ; success && exit 0 || fail && exit 1
 
