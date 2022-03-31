@@ -207,11 +207,11 @@ post_install(){ \
     dialog --colors --title " ~ AutoLinux ~ " --infobox "Installing $x, needed for the installation..." 3 60 ;
     pacstrap /mnt $x --needed --noconfirm >/dev/null 2>&1 ; clear ; done ; }
 
-cp_scripts(){ cd $srcdir && cp AutoInstall /mnt/tmp/ ; cp AutoInstall  /mnt/usr/bin >/dev/null 2>&1 ; }
+cp_scripts(){ cd $srcdir && cp autoInstall  /mnt/usr/bin >/dev/null 2>&1 ; }
 
 success(){ \
 figlet -toc 'Success!'|lolcat ; echo -e "\n" ; sleep 2 && 
-arch-chroot /mnt /usr/bin/AutoInstall
+arch-chroot /mnt /usr/bin/autoInstall
 }
 
 
