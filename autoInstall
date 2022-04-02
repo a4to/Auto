@@ -321,7 +321,7 @@ system_config(){ \
 	echo -e "\nLANG=en_ZA.UTF-8\nLANG=en_US.UTF-8" > /etc/locale.conf &&
     [ "$(cat /etc/locale.conf|grep "$area"|wc -l)" -eq "0" ] && 
     echo "LANG=en_"$area".UTF-8" >>/etc/locale.conf ; locale-gen &>/dev/null
-	echo -e "127.0.0.1     localhost\n::1     localhost\n127.0.11     $hostname.localhost $hostname" >/etc/hosts
+	echo -e "127.0.0.1     localhost\n::1           localhost\n127.0.1.1     $hostname.localhost $hostname" >/etc/hosts
     [ $edition = '2' ] && systemctl enable sddm.service >/dev/null 2>&1 ; systemctl enable NetworkManager.service >/dev/null 2>&1 ; 
     [ $edition = '1' ] || [ $edition = '2' ] && systemctl enable bluetooth-autoconnect.service >/dev/null 2>&1 ; 
     systemctl enable bluetooth.service >/dev/null 2>&1 ; [ $edition = '1' ] && 
