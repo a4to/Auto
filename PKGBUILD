@@ -2,7 +2,7 @@
 # ---
 _pkgname=AutoLinux
 pkgname=auto
-pkgver=3.0.3
+pkgver=3.0.4
 pkgrel=1
 pkgdesc='ArchLinux bootstrap and partitioning scripts, with optional AutoLinuxOS configs.'
 arch=(x86_64)
@@ -18,4 +18,5 @@ package() {
     install -Dm755 ${_pkgname}/{autoInstall,autoCleanInstall,autoPart} -t "${pkgdir}/opt/${_pkgname}"
     install -Dm755 ${_pkgname}/{autoCleanInstall,autoInstall,autoPart} -t "${pkgdir}/usr/bin"
     install -Dm644 ${_pkgname}/LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+    install -Dm644 ${_pkgname}/README.md "${pkgdir}/usr/share/doc/${pkgname}/README.md"
 }
