@@ -1,8 +1,8 @@
-# AutomateOS BootStrapping Scripts
+# Automate BootStrapping Scripts
 
-AutoLinux, is a tool providing the user with  simple and easy way to bootstrap and install ArchLinux.
+Auto, is a tool providing users with simple and easy way to bootstrap and install ArchLinux.
 
-During the installation process, you will be given the option to install either bare ArchLinux, and make all further installations yourself,
+During the installation process, you will be given the option to install either bare ArchLinux, and make all further installations decisions yourself,
 or to choose from a selection of the AutoLinux pre-configured desktop environment and window managers profiles, the flagship being the DWM edition. 
 
 
@@ -25,16 +25,16 @@ The package consists of 3 scripts:
 This script also includes section for partitioning your drive, so running the autoPart script is *NOT* required.
 
 
-**autoPart**: This script is for use outside of the AutoLinux installation process, and serves simply as a helper when partitioning your drive for any fresh installation.
+**autoPart**: This script is for useage outside of the AutoLinux installation process, and serves simply as a helper when partitioning your drive for any fresh installation.
 
 *NOTE*: The options are limited to partition selection, or drive wipe. 
-As for creating new partitions and deleting existing partitions, an external program such as cfdisk, fdisk or parted is required.
-The script also does not allow manual selection of FS type, and rootfs is automatially set to ext4.
+As for creating new partitions and deleting existing partitions, an external program such as cfdisk, fdisk or parted will be required if necessary.
+The script also does not allow for manual selection of a file system type, and the rootfs is automatially set to ext4.
 
 
 
-Upon installation, please read the function of both these scripts, and select *EITHER* `autoInstall` or `autoCleanInstall` to carry out the installation process.
-The `autoCleanInstall` script calls the `autoInstall` script upon completion of the base installation, and running both scripts is not required. 
+Upon installation, please read the function of both the `autoInstall` and `autoCleanInstall` script, and select *EITHER* `autoInstall` or `autoCleanInstall` to carry out 
+the installation process. The `autoCleanInstall` script calls the `autoInstall` script upon completion of the base installation, so running both scripts is *NOT* required. 
 
 
 
@@ -42,6 +42,9 @@ The `autoCleanInstall` script calls the `autoInstall` script upon completion of 
 **Prerequisites**
 
 - The script takes care of all requirements dependencies do not have to be manually installed. ✔
+
+
+
 
 
 
