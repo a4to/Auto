@@ -2,7 +2,7 @@
 # ---
 _pkgname=AutoLinux
 pkgname=auto
-pkgver=3.0.4
+pkgver=3.0.5
 pkgrel=1
 pkgdesc='ArchLinux bootstrap and partitioning scripts, with optional AutoLinux configs.'
 arch=(x86_64)
