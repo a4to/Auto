@@ -7,6 +7,7 @@ pkgrel=1
 pkgdesc='ArchLinux bootstrap and partitioning scripts, with optional AutoLinux configs.'
 arch=(x86_64)
 url="https://gitlab.com/qYp/${_pkgname}"
+install="auto.install"
 license=('MIT')
 depends=(dialog parted)
 makedepends=(git)                 
