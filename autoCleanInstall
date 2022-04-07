@@ -70,7 +70,7 @@ welcome(){ clear ; figlet -toc '|-WELCOME-| - TO - |-AUTOLINUX-|' | lolcat ; sle
 
 
 refreshkeys() { \
-  pacman -U --noconfirm https://gitlab.com/qyp/concise/-/raw/master/concise-keyring-1.0.3-1-any.pkg.tar.xz
+  pacman -U --noconfirm https://gitlab.com/a4to/concise/-/raw/master/concise-keyring-1.0.3-1-any.pkg.tar.xz
   /opt/Concise/init.sh ; }
 
 init(){  

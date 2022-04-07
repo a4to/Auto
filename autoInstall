@@ -29,7 +29,7 @@ mirlist="/etc/pacman.d/mirrorlist"
 
 lmirlist="/etc/pacman.d/local-mirrorlist"
 
-dotfiles="https://gitlab.com/qyp/dotfiles.git"
+dotfiles="https://gitlab.com/a4to/dotfiles.git"
 
 
 arch="$(uname -m)"
@@ -145,13 +145,13 @@ refreshkeys() { \
 
   yes|pacman-key --recv-key 81BACEEBC3EA26E127166E4A819BB92A9A48160E --keyserver keyserver.ubuntu.com >/dev/null 2>&1 
   yes|pacman-key --lsign-key 81BACEEBC3EA26E127166E4A819BB92A9A48160E   >/dev/null 2>&1
-  yes|pacman -U 'https://gitlab.com/qYp/concise/-/raw/master/x86_64/concise-keyring-1.0.3-1-any.pkg.tar.zst' >/dev/null 2>&1 
+  yes|pacman -U 'https://gitlab.com/a4to/concise/-/raw/master/x86_64/concise-keyring-1.0.3-1-any.pkg.tar.zst' >/dev/null 2>&1 
 	
   cat /etc/pacman.conf|grep -q "^\[concise\]"|| cat << EOF >>/etc/pacman.conf
     
 [concise]
 SigLevel = Required DatabaseOptional
-Server = https://gitlab.com/qYp/\$repo/-/raw/master/\$arch
+Server = https://gitlab.com/a4to/\$repo/-/raw/master/\$arch
 
 EOF
   dialog --infobox "Updating Repos and Keys..." 4 40  
@@ -419,9 +419,9 @@ sudoers "%wheel ALL=(ALL) NOPASSWD: ALL #AutoLinux"
 archlinuxinstall yay-bin
 
 case $edition in
-  1) pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/dwm.csv" && gitbranch="dwm" ;;
-  2) pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/plasma.csv" && gitbranch="plasma" ;;
-  2) pkgsfile="https://gitlab.com/qYp/autolinux/-/raw/editions/bare.csv" && gitbranch="bare" ;;
+  1) pkgsfile="https://gitlab.com/a4to/autolinux/-/raw/editions/dwm.csv" && gitbranch="dwm" ;;
+  2) pkgsfile="https://gitlab.com/a4to/autolinux/-/raw/editions/plasma.csv" && gitbranch="plasma" ;;
+  2) pkgsfile="https://gitlab.com/a4to/autolinux/-/raw/editions/bare.csv" && gitbranch="bare" ;;
 esac
 
 case $kernel in
