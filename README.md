@@ -8,13 +8,13 @@ The flagship of AutoLinux being the DWM edition.
 
 
 
-## Instructions For Use:
+## Usage:
 
 The package consists of 3 scripts:
 
-+ `autoPart`: A partitioning script.
-+ `autoInstall`: The base install script.
-+ `autoCleanInstall`: The clean install script.
+* `autoPart`: A partitioning script.
+* `autoInstall`: The base install script.
+* `autoCleanInstall`: The clean install script.
 
 
 **autoInstall**: This script is to be used for installing AutoLinux ontop of an existing Arch Linux installation, as a new user profile.
