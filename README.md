@@ -7,6 +7,17 @@ from a selection of one of the supported bare, or pre-configured desktop environ
 
 
 
+## Currently Supported Editions:
+
+* DWM - AutoLinux Edition
+* Plasma - AutoLinux Edition
+* Plasma (KDE Plasma as it comes)
+* Gnome (Gnome as it comes)
+* Xfce (Xfce as it comes)
+* Bare ArchLinux (No Additional Packages)  
+
+
+
 ## Usage:
 
 The package consists of 3 scripts:
@@ -32,17 +43,6 @@ The script also does not allow for manual selection of a file system type, and t
 
 Upon installation, please read the function of both the `autoInstall` and `autoCleanInstall` script, and select *EITHER* `autoInstall` or `autoCleanInstall` to carry out 
 the installation process. The `autoCleanInstall` script calls the `autoInstall` script upon completion of the base installation, so running both scripts is *NOT* required. 
-
-
-
-## Currently Supported Editions:
-
-* DWM - AutoLinux Edition
-* Plasma - AutoLinux Edition
-* Plasma (KDE Plasma as it comes)
-* Gnome (Gnome as it comes)
-* Xfce (Xfce as it comes)
-* Bare ArchLinux (No Additional Packages)  
   
 
 
@@ -52,5 +52,5 @@ the installation process. The `autoCleanInstall` script calls the `autoInstall` 
 
 
 
-I hope you find these scripts helpfull!    - a4to
+I hope you find these scripts helpfull !      - a4to
 
