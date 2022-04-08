@@ -315,28 +315,28 @@ system_config(){ \
 dialog --infobox "Setting System Information..." 4 40 ; sleep 2 
 
 case $edition in
-  1|2) hostname="AutoLinux"
-    grep -q "ILoveCandy" /etc/pacman.conf || sed -i "s/VerbosePkgLists/aILoveCandy" /etc/pacman.conf
-    sed -i "s/^#ParallelDownloads = .*/ParallelDownloads = 10/;s/^#Color$/Color/" /etc/pacman.conf ;;
-  *) hostname="ArchLinux" 
-    ;; esac ; echo "$hostname" > /etc/hostname
+  1) systemctl enable mpd.service >/dev/null 2>&1 ;;
+  2) systemctl enable sddm.service >/dev/null 2>&1 ; systemctl enable NetworkManager.service >/dev/null 2>&1 ;;
+  3) systemctl enable sddm.service >/dev/null 2>&1 ; systemctl enable NetworkManager.service >/dev/null 2>&1 ;;
+  4) systemctl enable gdm.service >/dev/null 2>&1 ; systemctl enable NetworkManager.service >/dev/null 2>&1 ;;
+  5) systemctl enable sddm.service >/dev/null 2>&1 ; systemctl enable NetworkManager.service >/dev/null 2>&1 ;;
+esac
 
+case $edition in
+  1|2) hostname="AutoLinux" ; grep -q "ILoveCandy" /etc/pacman.conf || 
+    sed -i "s/^#ParallelDownloads = .*/ParallelDownloads = 10/;s/^#Color$/Color/" /etc/pacman.conf
+    sed -i "s/VerbosePkgLists/aILoveCandy" /etc/pacman.conf ;  systemctl enable bluetooth-autoconnect.service >/dev/null 2>&1 ;;
+  3|4|5|6) hostname="ArchLinux" ;;
+esac
 
+echo "$hostname" > /etc/hostname
 sed -i "s/#en_"${area}".UTF-8/en_"${area}".UTF-8/g" /etc/locale.gen
-
-echo -e "\nLANG=en_${area}.UTF-8" > /etc/locale.conf ; locale-gen >/dev/null 2>&1
+echo "LANG=en_${area}.UTF-8" > /etc/locale.conf ; locale-gen >/dev/null 2>&1
 echo -e "127.0.0.1     localhost\n::1           localhost\n127.0.1.1     $hostname.localhost $hostname" >/etc/hosts
 
-[ -f /etc/localtime ] && rm /etc/localtime ;
-ln -sF /usr/share/zoneinfo/Africa/Harare /etc/localtime
-
-
-[ $edition = '2' ] && systemctl enable sddm.service >/dev/null 2>&1 ; systemctl enable NetworkManager.service >/dev/null 2>&1 ; 
-[ $edition = '1' ] && systemctl enable mpd.service >/dev/null 2>&1 ; 
-[ $edition = '1' ] || [ $edition = '2' ] && systemctl enable bluetooth-autoconnect.service >/dev/null 2>&1 ; 
-
-systemctl enable bluetooth.service >/dev/null 2>&1
+[ -f /etc/localtime ] && rm /etc/localtime ; ln -sF /usr/share/zoneinfo/Africa/Harare /etc/localtime ; systemctl enable bluetooth.service >/dev/null 2>&1
 rm -rf /tmp/pulse* ~/.pulse* ~/.config/pulse /home/$name/.pulse* /home/$name/.config/pulse* ; }
+
 
 xftlib(){ \                                            
     dialog --title "AutoLinux Installation" --infobox "Lastly installing 'libxft-bgra' .\nSuckless software to display color emojis without causing any errors." 6 80
