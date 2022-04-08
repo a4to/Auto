@@ -2,8 +2,9 @@
 
 Auto, is a tool providing users with simple and easy way to bootstrap and install Arch Linux.
 
-During the installation process, you will be given the option to install either bare Arch Linux, and make all further installations decisions yourself, or to choose 
-from a selection of one of the supported bare, or pre-configured desktop environment and window managers profiles. The flagship of AutoLinux being the DWM edition. 
+During the installation process, you will be given the option to install either bare Arch Linux, and make all further installations decisions 
+yourself, or to choose from a selection of one of the supported bare, or pre-configured desktop environment and window managers. 
+The flagship of AutoLinux being the DWM edition. 
 
 
 
