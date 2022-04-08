@@ -2,8 +2,8 @@
 
 Auto, is a tool providing users with simple and easy way to bootstrap and install Arch Linux.
 
-During the installation process, you will be given the option to install either bare Arch Linux, and make all further installations decisions yourself,
-or to choose from a selection of the AutoLinux pre-configured desktop environment and window managers profiles, the flagship being the DWM edition. 
+During the installation process, you will be given the option to install either bare Arch Linux, and make all further installations decisions yourself, or to choose 
+from a selection of one of the supported bare, or pre-configured desktop environment and window managers profiles. The flagship of AutoLinux being the DWM edition. 
 
 
 
@@ -35,11 +35,22 @@ the installation process. The `autoCleanInstall` script calls the `autoInstall` 
 
 
 
+## Currently Supported Editions:
+
+* DWM - AutoLinux Edition
+* Plasma - AutoLinux Edition
+* Plasma (KDE Plasma as it comes)
+* Gnome (Gnome as it comes)
+* Xfce (Xfce as it comes)
+* Bare ArchLinux (No Additional Packages)  
+  
+
+
 **Prerequisites**
 
-- The script takes care of all requirements dependencies do not have to be manually installed. ✔
+* The script takes care of all requirements dependencies do not have to be manually installed. ✔
 
 
 
-I hope these scripts are helpful and you enjoy your time in AutoLinux!     - a4to
+I hope you find these scripts helpfull!    - a4to
 
