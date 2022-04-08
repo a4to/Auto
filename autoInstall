@@ -50,9 +50,12 @@ KERNELS=(
   '4' 'linux-zen                                   ')
 
 EDITIONS=(  
-  '1' 'DWM                                         '
-  '2' 'Plasma                                      '
-  '3' 'Server Install (Bare ArchLinux)             ')
+  '1' 'DWM AutoLinux                               '
+  '2' 'Plasma AutoLinux                            '
+  '3' 'Plasma (KDE Plasma as it comes)             '
+  '4' 'Gnome (Gnome as it comes)                   '
+  '5' 'Xfce (Xfce as it comes)                     '
+  '6' 'Bare ArchLinux (No Additional Packages)     ')
  
 
 installpkg(){ pacman --noconfirm --needed -S "$*" >/dev/null 2>&1 ; }
@@ -267,7 +270,7 @@ installationloop(){ \
 
 placeconfigs() {
 	dialog --infobox " Downloading and installing config files..." 4 60
-	branch="$gitbranch" ; dir=$(mktemp -d)
+	branch="$configChoice" ; dir=$(mktemp -d)
 	[ ! -d "$2" ] && mkdir -p "$2"
 	chown "$name":wheel "$dir" "$2"
 	sudo -u "$name" git clone --recursive -b "$branch" --depth 1 --recurse-submodules "$1" "$dir" >/dev/null 2>&1
@@ -307,26 +310,33 @@ chmod +x strap.sh  ; sudo sh strap.sh >/dev/null 2>&1 &&
   dialog --infobox " Updating System Keys and Mirrors..." 4 50
 yes|pacman -Syyu >/dev/null 2>&1 ; }
 
-system_config(){ \
-	hostname="AutoLinux"
-	dialog --infobox "Setting System Information..." 4 40 ; sleep 2 &&
 
-	grep -q "ILoveCandy" /etc/pacman.conf || sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
-	sed -i "s/^#ParallelDownloads = *.*$/ParallelDownloads = 10/;s/^#Color$/Color/" /etc/pacman.conf
-  [ $edition = '3' ] && hostname="ArchLinux" ; [ -f /etc/localtime ] && rm /etc/localtime ;
-    ln -sF /usr/share/zoneinfo/Africa/Harare /etc/localtime
-	sed -i 's/#en_US.UTF-8/en_US.UTF-8/g' /etc/locale.gen
-	sed -i 's/#en_ZA.UTF-8/en_ZA.UTF-8/g' /etc/locale.gen
-	sed -i "s/#en_"$area".UTF-8/en_"$area".UTF-8/g" /etc/locale.gen
-	echo -e "\nLANG=en_ZA.UTF-8\nLANG=en_US.UTF-8" > /etc/locale.conf &&
-    [ "$(cat /etc/locale.conf|grep "$area"|wc -l)" -eq "0" ] && 
-    echo "LANG=en_"$area".UTF-8" >>/etc/locale.conf ; locale-gen &>/dev/null
-	echo -e "127.0.0.1     localhost\n::1           localhost\n127.0.1.1     $hostname.localhost $hostname" >/etc/hosts
-    [ $edition = '2' ] && systemctl enable sddm.service >/dev/null 2>&1 ; systemctl enable NetworkManager.service >/dev/null 2>&1 ; 
-    [ $edition = '1' ] || [ $edition = '2' ] && systemctl enable bluetooth-autoconnect.service >/dev/null 2>&1 ; 
-    systemctl enable bluetooth.service >/dev/null 2>&1 ; [ $edition = '1' ] && 
-      systemctl enable mpd.service >/dev/null 2>&1 ; echo "$hostname" > /etc/hostname
-  rm -rf /tmp/pulse* ~/.pulse* ~/.config/pulse /home/$name/.pulse* /home/$name/.config/pulse* ; }
+system_config(){ \
+dialog --infobox "Setting System Information..." 4 40 ; sleep 2 
+
+case $edition in
+  1|2) hostname="AutoLinux"
+    grep -q "ILoveCandy" /etc/pacman.conf || sed -i "s/VerbosePkgLists/aILoveCandy" /etc/pacman.conf
+    sed -i "s/^#ParallelDownloads = .*/ParallelDownloads = 10/;s/^#Color$/Color/" /etc/pacman.conf ;;
+  *) hostname="ArchLinux" 
+    ;; esac ; echo "$hostname" > /etc/hostname
+
+
+sed -i "s/#en_"${area}".UTF-8/en_"${area}".UTF-8/g" /etc/locale.gen
+
+echo -e "\nLANG=en_${area}.UTF-8" > /etc/locale.conf ; locale-gen >/dev/null 2>&1
+echo -e "127.0.0.1     localhost\n::1           localhost\n127.0.1.1     $hostname.localhost $hostname" >/etc/hosts
+
+[ -f /etc/localtime ] && rm /etc/localtime ;
+ln -sF /usr/share/zoneinfo/Africa/Harare /etc/localtime
+
+
+[ $edition = '2' ] && systemctl enable sddm.service >/dev/null 2>&1 ; systemctl enable NetworkManager.service >/dev/null 2>&1 ; 
+[ $edition = '1' ] && systemctl enable mpd.service >/dev/null 2>&1 ; 
+[ $edition = '1' ] || [ $edition = '2' ] && systemctl enable bluetooth-autoconnect.service >/dev/null 2>&1 ; 
+
+systemctl enable bluetooth.service >/dev/null 2>&1
+rm -rf /tmp/pulse* ~/.pulse* ~/.config/pulse /home/$name/.pulse* /home/$name/.config/pulse* ; }
 
 xftlib(){ \                                            
     dialog --title "AutoLinux Installation" --infobox "Lastly installing 'libxft-bgra' .\nSuckless software to display color emojis without causing any errors." 6 80
@@ -343,7 +353,7 @@ yesGrub(){ \
             grub-install --target=x86_64-efi --bootloader-id=AutoLinux --recheck >/dev/null 2>&1 ;
             grub-mkconfig -o /boot/grub/grub.cfg >/dev/null 2>&1 ; grubtheme ; }
 
-grubtheme(){ \
+grubTheme(){ \
 	dialog --infobox "Setting Grub theme..." 4 30 
     sleep 1 && mkdir -p /boot/grub/themes/AutoLinux &&
     cp /home/$name/.local/share/wallpapers/0.jpg /boot/grub/themes/AutoLinux/wp1jpg  >/dev/null 2>&1 
@@ -419,9 +429,12 @@ sudoers "%wheel ALL=(ALL) NOPASSWD: ALL #AutoLinux"
 archlinuxinstall yay-bin
 
 case $edition in
-  1) pkgsfile="https://gitlab.com/a4to/autolinux/-/raw/editions/dwm.csv" && gitbranch="dwm" ;;
-  2) pkgsfile="https://gitlab.com/a4to/autolinux/-/raw/editions/plasma.csv" && gitbranch="plasma" ;;
-  2) pkgsfile="https://gitlab.com/a4to/autolinux/-/raw/editions/bare.csv" && gitbranch="bare" ;;
+  1) pkgsfile="https://gitlab.com/a4to/auto/-/raw/editions/dwm.csv" && configChoice="dwm" ;;
+  2) pkgsfile="https://gitlab.com/a4to/auto/-/raw/editions/plasma.csv" && configChoice="plasma" ;;
+  3) pkgsfile="https://gitlab.com/a4to/auto/-/raw/editions/bare-plasma.csv" && configChoice="bare-plasma" ;;
+  4) pkgsfile="https://gitlab.com/a4to/auto/-/raw/editions/bare-gnome.csv" && configChoice="bare-gnome" ;;
+  5) pkgsfile="https://gitlab.com/a4to/auto/-/raw/editions/bare-xfce.csv" && configChoice="bare-xfce" ;;
+  6) pkgsfile="https://gitlab.com/a4to/auto/-/raw/editions/bare.csv" && configChoice="bare" ;;
 esac
 
 case $kernel in
@@ -445,7 +458,7 @@ done
 systembeepoff ; promptfix 
 
 
-placeconfigs "$dotfiles" "/home/$name" "$gitbranch" && rm -rf "/home/$name/.git"
+placeconfigs "$dotfiles" "/home/$name" "$configChoice" && rm -rf "/home/$name/.git"
           
 chshell || err "Changing default shell for root and "$name"."
 
@@ -468,10 +481,15 @@ mkdir -p /etc/X11/xinit/xinitrc.d >/dev/null 2>&1 &&
 grep -q "OTHER_OPTS='-a pulseaudio -m alsa_seq -r 48000'" /etc/conf.d/fluidsynth ||
 	echo "OTHER_OPTS='-a pulseaudio -m alsa_seq -r 48000'" >> /etc/conf.d/fluidsynth
 
+
+system_config
+
 pkill -15 -x 'pulseaudio'; sudo -u "$name" pulseaudio --start
 
 
-system_config ; [ "$loader" = "0" ] && yesGrub
+[ "$loader" = '0' ] && yesGrub
+
+[ $edition = '1' ] || [ $edition = '2' ] && [ "$loader" = '0' ] && grubTheme
 
 finalize ; clear ; [ $edition = '1' ] || [ $edition = '2' ] && skell
 
