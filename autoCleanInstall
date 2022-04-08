@@ -222,7 +222,7 @@ begin || err "User Exited."
 
 
 case "$wipeType" in
-  'manual') sudo mount $(cat $selRootFS) /mnt && completion && sleep 4 || 
+  'manual') sudo mount $(cat $selRootFS) /mnt && completion && sleep 2 || 
   ! [ -d /mnt/boot/EFI ] && mkdir -p /mnt/boot/EFI; sudo mount $(cat $selBoot) /mnt/boot/EFI ;;
   'automatic') sudo mount $(cat $selDsk)4 /mnt && completion && sleep 4 || 
   ! [ -d /mnt/boot/EFI ] && mkdir -p /mnt/boot/EFI; sudo mount $(cat $selDsk)2 /mnt/boot/EFI ;;
