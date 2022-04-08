@@ -1,3 +1,4 @@
+#!/env csv
 ,xorg-server,"the graphical server."
 ,xorg-setxkbmap,"Allows the setting of your keyboard using the X Keyboard Extension."
 ,xorg-xdpyinfo,"aids with resolution determination and screen recording."
@@ -68,3 +69,5 @@
 ,vino,"A VNC server for the GNOME desktop"
 ,xdg-user-dirs-gtk,"Creates user dirs and asks to relocalize them"
 ,yelp,"Get help with GNOME"
+,networkmanager,"Network connection manager"
+,gdm,"Display manager and login screen"

@@ -1,4 +1,4 @@
-#!/usr/bin/env csv
+#!/env csv
 ,xorg-server,"the graphical server."
 ,xorg-setxkbmap,"Allows the setting of your keyboard using the X Keyboard Extension."
 ,xorg-xdpyinfo,"aids with resolution determination and screen recording."

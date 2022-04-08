@@ -1,3 +1,4 @@
+#!/env csv
 ,xorg-server,"the graphical server."
 ,xorg-setxkbmap,"Allows the setting of your keyboard using the X Keyboard Extension."
 ,xorg-xdpyinfo,"aids with resolution determination and screen recording."
@@ -25,3 +26,34 @@
 ,plasma-workspace,"KDE Plasma Workspace"
 ,polkit-kde-agent,"Daemon providing a polkit authentication UI for KDE"
 ,systemsettings,"KDE system manager for hardware, software, and workspaces"
+,bluedevil,'Integrate the Bluetooth technology within KDE workspace and applications'
+,breeze-gtk,'Breeze widget theme for GTK 2 and 3'
+,discover,'KDE and Plasma resources management GUI'
+,drkonqi,'The KDE crash handler'
+,kde-gtk-config,'GTK2 and GTK3 Configurator for KDE'
+,kdeplasma-addons,'All kind of addons to improve your Plasma experience'
+,kgamma5,'Adjust your monitor gamma settings'
+,khotkeys,'KHotKeys'
+,kinfocenter,'A utility that provides information about a computer system'
+,kscreen,'KDE screen management software'
+,ksshaskpass,'ssh-add helper that uses kwallet and kpassworddialog'
+,kwallet-pam,'KWallet PAM integration'
+,kwayland-integration,'Provides integration plugins for various KDE frameworks for the wayland windowing system'
+,kwrited,'KDE daemon listening for wall and write messages'
+,oxygen,'KDE Oxygen style'
+,plasma-browser-integration,'Components necessary to integrate browsers into the Plasma Desktop'
+,plasma-disks,'Monitors S.M.A.R.T. capable devices for imminent failure'
+,plasma-firewall,'Control Panel for your system firewall'
+,plasma-nm,'Plasma applet written in QML for managing network connections'
+,plasma-pa,'Plasma applet for audio volume management using PulseAudio'
+,plasma-systemmonitor,'An interface for monitoring system sensors, process information and other system resources'
+,plasma-thunderbolt,'Plasma integration for controlling Thunderbolt devices'
+,plasma-vault,'Plasma applet and services for creating encrypted vaults'
+,plasma-workspace-wallpapers,'Additional wallpapers for the Plasma Workspace'
+,powerdevil,'Manages the power consumption settings of a Plasma Shell'
+,sddm-kcm,'KDE Config Module for SDDM'
+,xdg-desktop-portal-kde,'A backend implementation for xdg-desktop-portal using Qt/KF5'
+,dolphin,"A KDE file manager"
+,networkmanager,"Network connection manager"
+,sddm,"A lightweight, fast and easy to use login greeter"
+,plasma-meta,"A collection of Plasma components"

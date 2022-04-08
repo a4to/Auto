@@ -1,3 +1,4 @@
+#!/env csv
 ,xorg-server,"the graphical server."
 ,xorg-setxkbmap,"Allows the setting of your keyboard using the X Keyboard Extension."
 ,xorg-xdpyinfo,"aids with resolution determination and screen recording."
@@ -22,3 +23,42 @@
 ,xfdesktop,"A desktop manager for Xfce"
 ,xfwm4,"Xfce's window manager"
 ,xfwm4-themes,"A set of additional themes for the Xfce window manager"
+,mousepad,'Simple text editor for Xfce'
+,ristretto,'A fast and lightweight picture viewer for Xfce'
+,thunar-archive-plugin,'Create and extract archives in Thunar'
+,thunar-media-tags-plugin,'Adds special features for media files to the Thunar File Manager'
+,xfburn,'A simple CD/DVD burning tool based on libburnia libraries'
+,xfce4-artwork,'Backdrops for the Xfce4 desktop'
+,xfce4-battery-plugin,'A battery monitor plugin for the Xfce panel'
+,xfce4-clipman-plugin,'A clipboard plugin for the Xfce4 panel'
+,xfce4-cpufreq-plugin,'CPU frequency plugin for the Xfce4 panel'
+,xfce4-cpugraph-plugin,'Graphical representation of the CPU load'
+,xfce4-datetime-plugin,'A date and time display plugin for the Xfce panel'
+,xfce4-dict,'A dictionary plugin for the Xfce panel'
+,xfce4-diskperf-plugin,'Displays instant disk/partition performance in the Xfce4 panel'
+,xfce4-eyes-plugin,'A rolling eyes (following mouse pointer) plugin for the Xfce panel'
+,xfce4-fsguard-plugin,'File system usage monitor plugin for the Xfce4 panel'
+,xfce4-genmon-plugin,'plugin that monitors customizable programs stdout for the Xfce4 panel'
+,xfce4-mailwatch-plugin,'Multi-protocol, multi-mailbox mail watcher for the Xfce4 panel'
+,xfce4-mount-plugin,'Mount/umount utility for the Xfce4 panel'
+,xfce4-mpc-plugin,'Control the Music Player Daemon from the Xfce4 panel'
+,xfce4-netload-plugin,'A netload plugin for the Xfce panel'
+,xfce4-notes-plugin,'Notes plugin for the Xfce panel'
+,xfce4-notifyd,'Notification daemon for the Xfce desktop'
+,xfce4-pulseaudio-plugin,'Pulseaudio plugin for the Xfce4 panel'
+,xfce4-screensaver,'Xfce Screensaver'
+,xfce4-screenshooter,'An application to take screenshots'
+,xfce4-sensors-plugin,'Sensors plugin for the Xfce panel'
+,xfce4-smartbookmark-plugin,'Allows you to send requests directly to your browser and perform a custom search'
+,xfce4-systemload-plugin,'A system load plugin for the Xfce4 panel'
+,xfce4-taskmanager,'Easy to use task manager'
+,xfce4-time-out-plugin,'Take a break from your computer with this plugin for Xfce4'
+,xfce4-timer-plugin,'Plugin to track time for the Xfce4 panel'
+,xfce4-verve-plugin,'Command line plugin for the Xfce panel'
+,xfce4-wavelan-plugin,'Plugin to monitor wifi connectivity for the Xfce4 panel'
+,xfce4-weather-plugin,'A weather plugin for the Xfce4 panel'
+,xfce4-xkb-plugin,'Plugin to switch keyboard layouts for the Xfce4 panel'
+,parole,'Modern media player based on the GStreamer framework'
+,xfce4-whiskermenu-plugin,'Menu for Xfce4'
+,networkmanager,"Network connection manager"
+,sddm,"A lightweight, fast and easy to use login greeter"
