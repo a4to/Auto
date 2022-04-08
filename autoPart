@@ -142,7 +142,7 @@ case "$(cat $wholeDisk)" in
     mount $selRootFS /mnt && completion || err "User Exited.";;  
   3) confirm && case "$(echo $WIPE)" in 
     '0')  begin ;;
-    '1')  wipeDisk && completion && sleep 2 && wipeType='automatic'; mount $(cat $selDsk)4 /mnt
+    '1')  wipeDisk && completion && sleep 2 && wipeType='automatic'; mount $(cat $selDsk)4 /mnt ;;
   esac ;; 
 esac ; }
 
