@@ -8,18 +8,7 @@ The flagship of AutoLinux being the DWM edition.
 
 
 
-## Currently Supported Editions:
-
-* DWM - AutoLinux Edition
-* Plasma - AutoLinux Edition
-* Plasma (KDE Plasma as it comes)
-* Gnome (Gnome as it comes)
-* Xfce (Xfce as it comes)
-* Bare ArchLinux (No Additional Packages)  
-
-
-
-## Usage:
+## Instructions For Use:
 
 The package consists of 3 scripts:
 
@@ -31,7 +20,7 @@ The package consists of 3 scripts:
 **autoInstall**: This script is to be used for installing AutoLinux ontop of an existing Arch Linux installation, as a new user profile.
 
 
-**autoCleanInstall**: This script is intended for use when performing a clean/fresh installation, with no pre-existing OS installed on the partition(s) reserved for AutoLinux. 
+**autoCleanInstall**: This script is intended for use when performing a clean/fresh installation, with no pre-existing OS installed on the partition(s) reserved for the installation.
 This script also includes section for partitioning your drive, so running the autoPart script is *NOT* required.
 
 
@@ -45,6 +34,17 @@ The script also does not allow for manual selection of a file system type, and t
 Upon installation, please read the function of both the `autoInstall` and `autoCleanInstall` script, and select *EITHER* `autoInstall` or `autoCleanInstall` to carry out 
 the installation process. The `autoCleanInstall` script calls the `autoInstall` script upon completion of the base installation, so running both scripts is *NOT* required. 
   
+
+
+## Currently Supported Editions:
+
+* DWM - AutoLinux Edition
+* Plasma - AutoLinux Edition
+* Plasma (KDE Plasma as it comes)
+* Gnome (Gnome as it comes)
+* Xfce (Xfce as it comes)
+* Bare ArchLinux (No Additional Packages)  
+
 
 
 **Prerequisites**
