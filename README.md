@@ -10,21 +10,21 @@ The flagship of AutoLinux being the DWM edition.
 
 ## Usage:
 
-The package consists of 3 scripts:
+*The package consists of 3 scripts:*
 
 * `autoPart`: A partitioning script.
 * `autoInstall`: The base install script.
 * `autoCleanInstall`: The clean install script.
 
 
-**autoInstall**: This script is to be used for installing AutoLinux ontop of an existing Arch Linux installation, as a new user profile.
+`autoInstall`: This script is to be used for installing AutoLinux ontop of an existing Arch Linux installation, as a new user profile.
 
 
-**autoCleanInstall**: This script is intended for use when performing a clean/fresh installation, with no pre-existing OS installed on the partition(s) reserved for the installation.
-This script also includes section for partitioning your drive, so running the autoPart script is *NOT* required.
+`autoCleanInstall`: This script is intended for use when performing a clean/fresh installation, with no pre-existing OS installed on the partition(s) reserved for the installation.
+This script also includes section for partitioning your drive, so running the autoPart script is **NOT** required.
 
 
-**autoPart**: This script is for useage outside of the AutoLinux installation process, and serves simply as a helper when partitioning your drive for any fresh installation.
+`autoPart`: This script is for useage outside of the AutoLinux installation process, and serves simply as a helper when partitioning your drive for any fresh installation.
 
 *NOTE*: The options are limited to partition selection, or drive wipe. 
 As for creating new partitions and deleting existing partitions, an external program such as cfdisk, fdisk or parted will be required if necessary.
@@ -32,7 +32,7 @@ The script also does not allow for manual selection of a file system type, and t
 
 
 Upon installation, please read the function of both the `autoInstall` and `autoCleanInstall` script, and select *EITHER* `autoInstall` or `autoCleanInstall` to carry out 
-the installation process. The `autoCleanInstall` script calls the `autoInstall` script upon completion of the base installation, so running both scripts is *NOT* required. 
+the installation process. The `autoCleanInstall` script calls the `autoInstall` script upon completion of the base installation, so running both scripts is **NOT** required. 
   
 
 
