@@ -1,18 +1,27 @@
-,breeze,'Artwork, styles and assets for the Breeze visual style for the Plasma Desktop'
-,kactivitymanagerd,'System service to manage user activities and track the usage patterns'
-,kde-cli-tools,'Tools based on KDE Frameworks 5 to better interact with the system'
-,kdecoration,'Plugin based library to create window decorations'
-,kmenuedit,'KDE menu editor'
-,kscreenlocker,'Library and components for secure lock screen architecture'
-,ksystemstats,'A plugin based system monitoring daemon'
-,kwayland-server,'Wayland server components built on KDE Frameworks'
-,kwin,'An easy to use, but flexible, composited Window Manager'
-,layer-shell-qt,'Qt component to allow applications to make use of the Wayland wl-layer-shell protocol'
-,libkscreen,'KDE screen management software'
-,libksysguard,'Library to retrieve information on the current status of computer hardware'
-,milou,'A dedicated search application built on top of Baloo'
-,plasma-desktop,'KDE Plasma Desktop'
-,plasma-integration,'Qt Platform Theme integration plugins for the Plasma workspaces'
-,plasma-workspace,'KDE Plasma Workspace'
-,polkit-kde-agent,'Daemon providing a polkit authentication UI for KDE'
-,systemsettings,'KDE system manager for hardware, software, and workspaces'
+,xorg-server,"the graphical server."
+,xorg-setxkbmap,"Allows the setting of your keyboard using the X Keyboard Extension."
+,xorg-xdpyinfo,"aids with resolution determination and screen recording."
+,xorg-xinit,"starts the graphical server upon running the startx command."
+,xorg-xrandr,"a CLI for changing screen resolution ."
+,xorg-xev,"Useful for determining keycodes in the event of remapping keys."
+,xorg-xbacklight,"enables changing screen brightness levels."
+,xorg-xsetroot,"A utility to change appearance of your root window, used for DWM status bar."
+,xorg-xprop,"a tool for detecting window properties."
+,breeze,"Artwork, styles and assets for the Breeze visual style for the Plasma Desktop"
+,kactivitymanagerd,"System service to manage user activities and track the usage patterns"
+,kde-cli-tools,"Tools based on KDE Frameworks 5 to better interact with the system"
+,kdecoration,"Plugin based library to create window decorations"
+,kmenuedit,"KDE menu editor"
+,kscreenlocker,"Library and components for secure lock screen architecture"
+,ksystemstats,"A plugin based system monitoring daemon"
+,kwayland-server,"Wayland server components built on KDE Frameworks"
+,kwin,"An easy to use, but flexible, composited Window Manager"
+,layer-shell-qt,"Qt component to allow applications to make use of the Wayland wl-layer-shell protocol"
+,libkscreen,"KDE screen management software"
+,libksysguard,"Library to retrieve information on the current status of computer hardware"
+,milou,"A dedicated search application built on top of Baloo"
+,plasma-desktop,"KDE Plasma Desktop"
+,plasma-integration,"Qt Platform Theme integration plugins for the Plasma workspaces"
+,plasma-workspace,"KDE Plasma Workspace"
+,polkit-kde-agent,"Daemon providing a polkit authentication UI for KDE"
+,systemsettings,"KDE system manager for hardware, software, and workspaces"
