@@ -1,7 +1,7 @@
 # Maintainer: Connor Etherington <connor@concise.cc>
 # ---
 pkgname=auto
-pkgver=3.0.6
+pkgver=3.0.7
 pkgrel=1
 pkgdesc='ArchLinux bootstrap and partitioning scripts, with optional AutoLinux configs.'
 arch=(x86_64)
