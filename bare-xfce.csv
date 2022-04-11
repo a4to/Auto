@@ -1,11 +1,6 @@
 ,xorg-server,"the graphical server."
-,xorg-setxkbmap,"Allows the setting of your keyboard using the X Keyboard Extension."
-,xorg-xdpyinfo,"aids with resolution determination and screen recording."
 ,xorg-xinit,"starts the graphical server upon running the startx command."
 ,xorg-xrandr,"a CLI for changing screen resolution ."
-,xorg-xev,"Useful for determining keycodes in the event of remapping keys."
-,xorg-xbacklight,"enables changing screen brightness levels."
-,xorg-xsetroot,"A utility to change appearance of your root window, used for DWM status bar."
 ,xorg-xprop,"a tool for detecting window properties."
 ,exo,"Application library for Xfce"
 ,garcon,"Implementation of the freedesktop.org menu specification"
@@ -51,13 +46,8 @@
 ,xfce4-smartbookmark-plugin,'Allows you to send requests directly to your browser and perform a custom search'
 ,xfce4-systemload-plugin,'A system load plugin for the Xfce4 panel'
 ,xfce4-taskmanager,'Easy to use task manager'
-,xfce4-time-out-plugin,'Take a break from your computer with this plugin for Xfce4'
-,xfce4-timer-plugin,'Plugin to track time for the Xfce4 panel'
-,xfce4-verve-plugin,'Command line plugin for the Xfce panel'
-,xfce4-wavelan-plugin,'Plugin to monitor wifi connectivity for the Xfce4 panel'
-,xfce4-weather-plugin,'A weather plugin for the Xfce4 panel'
 ,xfce4-xkb-plugin,'Plugin to switch keyboard layouts for the Xfce4 panel'
 ,parole,'Modern media player based on the GStreamer framework'
 ,xfce4-whiskermenu-plugin,'Menu for Xfce4'
 ,networkmanager,"Network connection manager"
-,sddm,"A lightweight, fast and easy to use login greeter"
+,lightdm,'A minimal and easy to use login greeter'
