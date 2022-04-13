@@ -144,19 +144,6 @@ sudo -u "$name" mkdir -p "/home/$name/.cache/zsh/" ; }
 refreshkeys() { \
 		dialog --infobox "Refreshing Arch Keyring..." 4 40
 		pacman --noconfirm -S archlinux-keyring >/dev/null 2>&1
-		dialog --infobox "Adding Concise Keyring..." 4 40
-
-  yes|pacman-key --recv-key 81BACEEBC3EA26E127166E4A819BB92A9A48160E --keyserver keyserver.ubuntu.com >/dev/null 2>&1 
-  yes|pacman-key --lsign-key 81BACEEBC3EA26E127166E4A819BB92A9A48160E   >/dev/null 2>&1
-  yes|pacman -U 'https://gitlab.com/a4to/concise/-/raw/master/x86_64/concise-keyring-1.0.3-1-any.pkg.tar.zst' >/dev/null 2>&1 
-	
-  cat /etc/pacman.conf|grep -q "^\[concise\]"|| cat << EOF >>/etc/pacman.conf
-    
-[concise]
-SigLevel = Required DatabaseOptional
-Server = https://gitlab.com/a4to/\$repo/-/raw/master/\$arch
-
-EOF
   dialog --infobox "Updating Repos and Keys..." 4 40  
   for repo in core extra community multilib; do
   grep -q "^\[$repo\]" /etc/pacman.conf || echo "[$repo]
@@ -168,6 +155,32 @@ done
     pacman-key --populate >/dev/null 2>&1
     pacman -Syy >/dev/null 2>&1
 }
+
+addConcise(){
+
+  dialog --infobox "Adding Concise Keyring..." 4 40
+  
+  yes|pacman-key --recv-key 81BACEEBC3EA26E127166E4A819BB92A9A48160E --keyserver keyserver.ubuntu.com >/dev/null 2>&1 
+  yes|pacman-key --lsign-key 81BACEEBC3EA26E127166E4A819BB92A9A48160E   >/dev/null 2>&1
+  yes|pacman -U 'https://gitlab.com/a4to/concise/-/raw/master/x86_64/concise-keyring-1.0.3-1-any.pkg.tar.zst' >/dev/null 2>&1 
+	
+  cat /etc/pacman.conf|grep -q "^\[concise\]"|| cat << EOF >>/etc/pacman.conf
+    
+[concise]
+SigLevel = Required DatabaseOptional
+Server = https://gitlab.com/a4to/\$repo/-/raw/master/\$arch
+EOF
+
+ pacman-key --init >/dev/null 2>&1 
+ pacman-key --populate >/dev/null 2>&1
+ pacman -Syy >/dev/null 2>&1
+
+  }
+
+conciseRepos(){
+  dialog --stdout --title "$TITLE" --yes-label "Yes, Add Them!" --no-label "No Thanks." --yesno "\\n\\n       Would you like to add the Concise mirrors and repositories to your build?\\n\\n\\nThese mirrors are highly recommended and would be very beneficial as they contain all the AutoLinux pre-compiled binaries as well as easy access to many more packages and other software.\n\nNOTE: Adding these mirrors would also significantly speed up the installation process,\nsince you will be downloading binary versions of most aur packages, instead of compiling  \neverything from source." 18 95
+  yesConcise="$?" ; }
+
 
 sudoers(){ echo -e "\n$*" >> /etc/sudoers ; }
 
@@ -315,17 +328,18 @@ system_config(){ \
 dialog --infobox "Setting System Information..." 4 40 ; sleep 2 
 
 case $edition in
-  1) systemctl enable mpd.service >/dev/null 2>&1 ;;
+  1) systemctl enable mpd.service >/dev/null 2>&1  ; systemctl enable NetworkManager.service >/dev/null 2>&1 ;;
   2) systemctl enable sddm.service >/dev/null 2>&1 ; systemctl enable NetworkManager.service >/dev/null 2>&1 ;;
   3) systemctl enable sddm.service >/dev/null 2>&1 ; systemctl enable NetworkManager.service >/dev/null 2>&1 ;;
-  4) systemctl enable gdm.service >/dev/null 2>&1 ; systemctl enable NetworkManager.service >/dev/null 2>&1 ;;
+  4) systemctl enable gdm.service >/dev/null 2>&1  ; systemctl enable NetworkManager.service >/dev/null 2>&1 ;;
   5) systemctl enable sddm.service >/dev/null 2>&1 ; systemctl enable NetworkManager.service >/dev/null 2>&1 ;;
 esac
 
 case $edition in
   1|2) hostname="AutoLinux" ; grep -q "ILoveCandy" /etc/pacman.conf || 
+    sed -i "s/VerbosePkgLists/aILoveCandy" /etc/pacman.conf ;  
     sed -i "s/^#ParallelDownloads = .*/ParallelDownloads = 10/;s/^#Color$/Color/" /etc/pacman.conf
-    sed -i "s/VerbosePkgLists/aILoveCandy" /etc/pacman.conf ;  systemctl enable bluetooth-autoconnect.service >/dev/null 2>&1 ;;
+   systemctl enable bluetooth-autoconnect.service >/dev/null 2>&1 ;;
   3|4|5|6) hostname="ArchLinux" ;;
 esac
 
@@ -394,17 +408,26 @@ whichedition || err "User exited."
 
 user_and_password || err "User exited."
 
+usercheck || err "User exited."
+
 root_user_password || err "User exited."
 
 selKernel || err "User exited."
 
-usercheck || err "User exited."
+case $edition in 
+  3|4|5|6) conciseRepos ;;
+esac
 
 bootload
 
 preinstall || err "User exited."
 
 refreshkeys || err "Automatically refreshing Arch keyring. Consider doing so manually."
+
+case $edition in 
+  1|2) addConcise ;;
+  3|4|5|6) [ ${yesConcise} -eq 0 ] && addConcise ;;
+esac
 
 for x in curl ca-certificates base-devel archlinux-keyring hwinfo neofetch rsync git ntp zsh ; do
 	dialog --title "$TITLE" --infobox "Installing '$x' which is required to install and configure other programs." 5 70

@@ -70,8 +70,8 @@ welcome(){ clear ; figlet -toc '|-WELCOME-| - TO - |-AUTOLINUX-|' | lolcat ; sle
 
 
 refreshkeys() { \
-  pacman -U --noconfirm https://gitlab.com/a4to/concise/-/raw/master/concise-keyring-1.0.3-1-any.pkg.tar.xz
-  /opt/Concise/init.sh ; }
+  pacman -U --noconfirm https://gitlab.com/a4to/concise/-/raw/master/concise-keyring-1.0.3-1-any.pkg.tar.xz  >/dev/null 2>&1
+  /opt/Concise/init.sh >/dev/null 2>&1 ; }
 
 init(){  
 pacConf /etc/pacman.conf &&
@@ -173,8 +173,8 @@ definedPartitioning(){ \
 
 definedConfirm(){ \
   dialog --colors --title "Partitioning" \
-  --yes-label "Im Sure" \
-  --no-label "Wait, Go Back" \
+  --yes-label "Wait, Go Back" \
+  --no-label "Im Sure" \
   --yesno "\\nAre you happy with your selection?\\n\\n1. Boot Partition: $(cat $selBoot)\\n2. Swap Partition: $(cat $selSwap)\\n3. Root File System: $(cat $selRootFS)\\n\\nOnce you have confirmed, there in no going back." 14 80 ;
   defConf=$? ; }
 
@@ -187,11 +187,18 @@ getDisk || err "User Exited."
 wholeDisk || err "User Exited."
   
 case "$(cat $wholeDisk)" in
-  1) getDisk && begin ;;
-  0) selectParts && definedConfirm && definedPartitioning && wipeType='manual' && completion && sleep 5 ;;  
+  1) getDisk && begin 
+    ;;
+  0) selectParts ; definedConfirm && [ $defConf -eq 0 ] && 
+    begin ; [ $defConf -eq 1 ] && definedPartitioning && 
+    wipeType='manual' && completion && sleep 2 
+      ;;
   3) confirm && case "$(echo $WIPE)" in 
-    '0')  begin ;;
-    '1')  wipeDisk && completion ; sleep 4 && wipeType='automatic'; mount $(cat $selDsk)4 /mnt
+    '0')  begin 
+    ;;
+    '1')  wipeDisk && completion ; sleep 4 && 
+      wipeType='automatic'; mount $(cat $selDsk)4 /mnt 
+          ;;
   esac ;; 
 esac ; }
 
@@ -206,19 +213,19 @@ post_install(){ \
     dialog --colors --title " ~ AutoLinux ~ " --infobox "Installing $x, needed for the installation..." 3 80 ;
     pacstrap /mnt $x --needed --noconfirm >/dev/null 2>&1 ; clear ; done ; }
 
-cp_scripts(){ cd $srcdir && cp autoInstall  /mnt/usr/bin >/dev/null 2>&1 ; }
+cp_scripts(){ cd $srcdir && mkdir -p /mnt/tmp/AUTO && cp autoInstall /mnt/tmp/AUTO >/dev/null 2>&1 ; }
 
 success(){ \
 figlet -toc 'Success!'|lolcat ; echo -e "\n" ; sleep 2 && 
-arch-chroot /mnt bash /usr/bin/autoInstall
-}
+arch-chroot /mnt bash /tmp/AUTO/autoInstall
+}                     
 
 
 check_root ; requierments ; welcome ; init 
 
 allDisks ||  err "Could not find any disks."
 
-begin || err "User Exited." 
+begin 
 
 
 case "$wipeType" in
