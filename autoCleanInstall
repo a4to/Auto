@@ -14,6 +14,9 @@
 #########################################################################################################################################################################################
 #########################################################################################################################################################################################
 
+trap 'lastCommand=$currentCommand; currentCommand=$BASH_COMMAND' DEBUG
+trap 'echo $lastCommand' EXIT QUIT STOP ERR
+
 drives(){
 
 ## If you would like to include any additional drives or partitions
@@ -52,7 +55,7 @@ selPar=$(mktemp)      ; selPart=$(mktemp)
 selSwap=$(mktemp)     ; selBoot=$(mktemp)
 selRootFS=$(mktemp)   ; selSwap=$(mktemp)
 wholeDisk=$(mktemp)   ; confirm=$(mktemp)
-partitions=$(mktemp)
+partitions=$(mktemp)  ; chRootDir=$(mktemp)
 
 srcdir=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd && echo)
 
@@ -187,20 +190,13 @@ getDisk || err "User Exited."
 wholeDisk || err "User Exited."
   
 case "$(cat $wholeDisk)" in
-  1) getDisk && begin 
-    ;;
-  0) selectParts ; definedConfirm && [ $defConf -eq 0 ] && 
-    begin ; [ $defConf -eq 1 ] && definedPartitioning && 
-    wipeType='manual' && completion && sleep 2 
-      ;;
+  1) getDisk && begin ;;
+  0) selectParts ; definedConfirm && [ $defConf -eq 0 ] && begin ||  
+    [ $defConf -eq 1 ] && definedPartitioning && wipeType='manual' ;;
   3) confirm && case "$(echo $WIPE)" in 
-    '0')  begin 
-    ;;
-    '1')  wipeDisk && completion ; sleep 4 && 
-      wipeType='automatic'; mount $(cat $selDsk)4 /mnt 
-          ;;
-  esac ;; 
-esac ; }
+    '0') begin ;;
+    '1') wipeDisk && wipeType='automatic'; mount $(cat $selDsk)4 /mnt  ;;
+  esac ;; esac ; }
 
 base_install(){	\
   for x in linux-firmware base base-devel; do
@@ -216,10 +212,8 @@ post_install(){ \
 cp_scripts(){ cd $srcdir && mkdir -p /mnt/tmp/AUTO && cp autoInstall /mnt/tmp/AUTO >/dev/null 2>&1 ; }
 
 success(){ \
-figlet -toc 'Success!'|lolcat ; echo -e "\n" ; sleep 2 && 
-arch-chroot /mnt bash /tmp/AUTO/autoInstall
+figlet -toc 'Success!'|lolcat ; echo -e "\n" ; sleep 2
 }                     
-
 
 check_root ; requierments ; welcome ; init 
 
@@ -229,9 +223,9 @@ begin
 
 
 case "$wipeType" in
-  'manual') sudo mount $(cat $selRootFS) /mnt && completion && sleep 2 || 
+  'manual') sudo mount $(cat $selRootFS) /mnt && completion && sleep 3 || 
   ! [ -d /mnt/boot/EFI ] && mkdir -p /mnt/boot/EFI; sudo mount $(cat $selBoot) /mnt/boot/EFI ;;
-  'automatic') sudo mount $(cat $selDsk)4 /mnt && completion && sleep 2 || 
+  'automatic') sudo mount $(cat $selDsk)4 /mnt && completion && sleep 3 || 
   ! [ -d /mnt/boot/EFI ] && mkdir -p /mnt/boot/EFI; sudo mount $(cat $selDsk)2 /mnt/boot/EFI ;;
 esac
 
@@ -242,8 +236,7 @@ drives || err "User Exited."
 post_install  || err "User Exited."
 
 
-
-cp_scripts ; success && exit 0 || fail && exit 1
+cp_scripts && success && arch-chroot /mnt bash /tmp/AUTO/autoInstall && exit 0 || fail && exit 1
 
 
 #########################################################################################################################################################################################

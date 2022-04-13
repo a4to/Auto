@@ -18,6 +18,8 @@
 ## ### VARIABLES & FUNCTIONS ### ##
  #-------------------------------#
 
+trap 'lastCommand=$currentCommand; currentCommand=$BASH_COMMAND' DEBUG
+trap 'echo $lastCommand' EXIT QUIT STOP ERR
 
 pkgdir="/opt"
 
